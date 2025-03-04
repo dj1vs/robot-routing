@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>three.js webgl - skinning and morphing</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="main.css">
+	<style>
+		body {
+			color: #222;
+		}
+
+		a {
+			color: #2fa1d6;
+		}
+
+		p {
+			max-width: 600px;
+			margin-left: auto;
+			margin-right: auto;
+			padding: 0 2em;
+		}
+	</style>
+
+	<script type="importmap">
+		{
+			"imports": {
+			"three": "https://unpkg.com/three@0.158/build/three.module.js",
+			"three/addons/": "https://unpkg.com/three@0.158/examples/jsm/"
+			}
+		}
+	</script>
+
+	<!-- <script src="scene.js" type="module" defer></script> -->
+
+	<script src="socket.js" type="module" defer></script>
+</head>
+
+<body>
+	<div id="info">
+		<div class="robot-info">
+			<p id="temperature" class="temperature"></p>
+			<p id="health"></p>
+		</div>
+		<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+		<div class="input-form">
+			<input type="text" id="host" class="input-host" placeholder="hostname">
+			<button type="button" class="button" id="connect">
+				Connect to station
+			</button>
+			<button type="button" class="button" id="disconnect">
+				Disconnect from station
+			</button>
+			<button type="button" class="button" id="changeMode">
+				Change mode
+			</button>
+		</div>
+
+		<div class="controllers">
+			<div class="row-0">
+				<button id="healButton">
+					<img src="icons/heal.png" width="35px">
+				</button>
+			</div>
+			<div class="row-1">
+				<button id="turnLeftButton">
+					<img src="icons/left-turn.png" width="35px">
+				</button>
+				<button id="moveForwardButton">
+					<img src="icons/up-arrow.png" width="35px">
+				</button>
+				<button id="turnRightButton">
+					<img src="icons/right-turn.png" width="35px">
+				</button>
+
+			</div>
+			<div class="row-2">
+				<button id="moveLeftButton">
+					<img src="icons/left-arrow.png" width="35px">
+				</button>
+				<button id="moveRightButton">
+					<img src="icons/right-arrow.png" width="35px">
+				</button>
+			</div>
+
+			<button id="moveBackButton">
+				<img src="icons/down-arrow.png" width="35px">
+			</button>
+		</div>
+</body>
+
+</html>

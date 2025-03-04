@@ -1,0 +1,38 @@
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+</head>
+<script src="/socket.io/socket.io.js" crossorigin="anonymous"></script>
+<script>
+  const socket = io();
+</script>
+<body>
+  <!-- 
+#### changeMode
+изменение с автопилота на ручник и наоборот
+#### fixCriticalError
+после оповещения о критической ошибке, надо отправить это событие, чтобы ее устранить
+#### restart
+полное обновление, желательно использовать только после смерти
+#### heal
+запускается процесс починики 10 хп в секунду до 100 хп, ничего не блочится, просто хил
+#### moveForward
+#### moveBackward
+#### moveLeft
+#### moveRight
+#### turnLeft 
+#### turnRight
+
+  -->
+  <button onclick="socket.emit('changeMode')">changeMode</button>
+  <button onclick="socket.emit('fixCriticalError')">fixCriticalError</button>
+  <button onclick="socket.emit('restart')">restart</button>
+  <button onclick="socket.emit('heal')">heal</button>
+  <button onclick="socket.emit('moveForward')">moveForward</button>
+  <button onclick="socket.emit('moveBackward')">moveBackward</button>
+  <button onclick="socket.emit('moveLeft')">moveLeft</button>
+  <button onclick="socket.emit('moveRight')">moveRight</button>
+  <button onclick="socket.emit('turnLeft')">turnLeft</button>
+  <button onclick="socket.emit('turnRight')">turnRight</button>
+</body>
+</html>
