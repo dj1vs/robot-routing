@@ -2,11 +2,8 @@ import socketio
 import asyncio
 import uvicorn
 from basic.pybasic import pybasic
+from functools import partial
 from basic.pybasic import global_table
-
-
-
-
 
 sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
 
@@ -29,8 +26,7 @@ class Station:
 
 stations = {}
 
-@global_table.reflect('MOVE')
-def move(url, dir):
+def move_basic(url, dir):
     global stations
 
     if url not in stations:
@@ -51,6 +47,27 @@ def move(url, dir):
         return
     
     asyncio.get_running_loop().create_task(station.socket.emit(cmd))
+
+def turn_basic(url, dir):
+    global stations
+
+    if url not in stations:
+        return
+    station = stations[url]
+
+    cmd = ''
+    if (dir == 'right'):
+        cmd = "turnRight"
+    elif dir == 'left':
+        cmd = 'turnLeft'
+    else:
+        return
+    
+    asyncio.get_running_loop().create_task(station.socket.emit(cmd))
+
+def reflect_basic_funcs(url):
+    global_table.reflect('MOVE', partial(move_basic, url))
+    global_table.reflect('TURN', partial(turn_basic, url))
 
 @sio.event
 async def connect(sid, environ, auth):
@@ -151,20 +168,16 @@ async def connectToStation(sid, url):
 @sio.event
 async def move(sid, dir):
     for station in stations.values():
+        reflect_basic_funcs(station.url)
         if sid in station.clients:
-            pybasic.execute_text(f"MOVE \"{station.url}\", \"{dir}\"")
+            pybasic.execute_text(f"MOVE \"{dir}\"")
 
 @sio.event
-async def turnLeft(sid):
+async def turn(sid, dir):
     for station in stations.values():
+        reflect_basic_funcs(station.url)
         if sid in station.clients:
-            await station.socket.emit("turnLeft")
-
-@sio.event
-async def turnRight(sid):
-    for station in stations.values():
-        if sid in station.clients:
-            await station.socket.emit("turnRight")
+            pybasic.execute_text(f"TURN \"{dir}\"")
 
 @sio.event
 async def changeMode(sid):
