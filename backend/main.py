@@ -65,9 +65,19 @@ def turn_basic(url, dir):
     
     asyncio.get_running_loop().create_task(station.socket.emit(cmd))
 
+def heal_basic(url):
+    global stations
+
+    if url not in stations:
+        return
+    station = stations[url]
+
+    asyncio.get_running_loop().create_task(station.socket.emit("heal"))
+
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
     global_table.reflect('TURN', partial(turn_basic, url))
+    global_table.reflect('HEAL', partial(heal_basic, url))
 
 @sio.event
 async def connect(sid, environ, auth):
@@ -194,8 +204,9 @@ async def restart(sid):
 @sio.event
 async def heal(sid):
     for station in stations.values():
+        reflect_basic_funcs(station.url)
         if sid in station.clients:
-            await station.socket.emit("heal")
+            pybasic.execute_text('HEAL')
 
 @sio.event
 async def emotes(sid, emote):
