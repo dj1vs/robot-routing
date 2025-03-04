@@ -5,22 +5,7 @@ from basic.pybasic import pybasic
 from basic.pybasic import global_table
 
 
-move_reg = None
 
-@global_table.reflect('MOVE')
-def move(dir):
-    global move_reg
-    
-    if (dir == 'forward'):
-        move_reg = "moveForward"
-    elif (dir == 'backward'):
-        move_reg = "moveBackward"
-    elif (dir == 'right'):
-        move_reg = "moveRight"
-    elif (dir == 'left'):
-        move_reg = 'moveLeft'
-    else:
-        move_reg = ''
 
 
 sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
@@ -43,6 +28,29 @@ class Station:
         self.url = url
 
 stations = {}
+
+@global_table.reflect('MOVE')
+def move(url, dir):
+    global stations
+
+    if url not in stations:
+        return
+
+    station = stations[url]
+
+    cmd = ''
+    if (dir == 'forward'):
+        cmd = "moveForward"
+    elif (dir == 'backward'):
+        cmd = "moveBackward"
+    elif (dir == 'right'):
+        cmd = "moveRight"
+    elif (dir == 'left'):
+        cmd = 'moveLeft'
+    else:
+        return
+    
+    asyncio.get_running_loop().create_task(station.socket.emit(cmd))
 
 @sio.event
 async def connect(sid, environ, auth):
@@ -142,13 +150,9 @@ async def connectToStation(sid, url):
 
 @sio.event
 async def move(sid, dir):
-    global basic_res
-    pybasic.execute_text(f"MOVE \"{dir}\"")
-    sock_cmd = move_reg
-    print("sock_cmd", sock_cmd, "dir", dir)
     for station in stations.values():
         if sid in station.clients:
-            await station.socket.emit(sock_cmd)
+            pybasic.execute_text(f"MOVE \"{station.url}\", \"{dir}\"")
 
 @sio.event
 async def turnLeft(sid):

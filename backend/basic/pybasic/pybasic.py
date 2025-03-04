@@ -643,7 +643,6 @@ def execute_text(program_text):
     global parser, ast
     init()
     try:
-        print(program_text)
         for line in program_text.splitlines():
             parser.parse(line)
         # ast.show()
