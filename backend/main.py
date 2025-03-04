@@ -26,7 +26,7 @@ class Station:
 
 stations = {}
 
-def move_basic(url, dir):
+def move_basic(url, dir, delay):
     global stations
 
     if url not in stations:
@@ -46,7 +46,7 @@ def move_basic(url, dir):
     else:
         return
     
-    asyncio.get_running_loop().create_task(station.socket.emit(cmd))
+    asyncio.get_running_loop().create_task(station.socket.emit(cmd, delay))
 
 def turn_basic(url, dir):
     global stations
@@ -170,7 +170,7 @@ async def move(sid, dir):
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            pybasic.execute_text(f"MOVE \"{dir}\"")
+            pybasic.execute_text(f"MOVE \"{dir}\", 0")
 
 @sio.event
 async def turn(sid, dir):

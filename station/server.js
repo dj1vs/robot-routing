@@ -48,12 +48,25 @@ io.on('connection', (socket) => {
     });
 
     // управление
-    socket.on('moveForward', () => {
-        robot.moveForward();
+    socket.on('moveForward', (delay) => {
+        setTimeout(() => {
+            robot.moveForward()
+        }, delay)
     });
-
-    socket.on('moveBackward', () => {
-        robot.moveBackward();
+    socket.on('moveBackward', (delay) => {
+        setTimeout(() => {
+            robot.moveBackward()
+        }, delay)
+    });
+    socket.on('moveLeft', (delay) => {
+        setTimeout(() => {
+            robot.moveLeft()
+        }, delay)
+    });
+    socket.on('moveRight', (delay) => {
+        setTimeout(() => {
+            robot.moveRight()
+        }, delay)
     });
 
     socket.on('turnLeft', () => {
@@ -62,14 +75,6 @@ io.on('connection', (socket) => {
 
     socket.on('turnRight', () => {
         robot.turnRight();
-    });
-
-    socket.on('moveLeft', () => {
-        robot.moveLeft();
-    });
-
-    socket.on('moveRight', () => {
-        robot.moveRight();
     });
 
     socket.on('disconnect', () => {
