@@ -40,6 +40,7 @@ class Robot {
   }
 
   move(direction, steps) {
+    console.log('move', direction, steps)
     const current_z = this.coordinates[1];
     let future_coordinates = [...this.coordinates];
 
@@ -58,17 +59,25 @@ class Robot {
         break;
     }
 
+    console.log(future_coordinates)
+
     if (future_coordinates[0] < 0 || future_coordinates[0] >= map.length) {
+      console.log('return 1', future_coordinates[0], map.length)
       return;
     }
 
     if (future_coordinates[2] < 0 || future_coordinates[2] >= map[0][0].length) {
+      console.log('return 1', future_coordinates[2], map[0][0].length)
       return;
     }
 
     if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
+      console.log('не воздух')
       future_coordinates[1] = current_z + 1;
-      if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
+      if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух'
+        && map[future_coordinates[0]][future_coordinates[2] + 1][future_coordinates[1]] !== 'воздух'
+      ) {
+        console.log('return 3', future_coordinates[1], map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]])
         return;
       }
     } 
@@ -80,6 +89,7 @@ class Robot {
     future_coordinates[1]++;
 
     if (future_coordinates[1] === 0) {
+      console.log('return 4', future_coordinates[1])
       return;
     }
 
@@ -114,21 +124,24 @@ class Robot {
     this.move(this.direction, 1);
   }
 
+// 26/47
+
   moveBackward() {
     this.move(this.direction, -1);
-    this.direction = { 'север': 'юг', 'юг': 'север', 'восток': 'запад', 'запад': 'восток' }[this.direction];
   }
 
   moveLeft() {
-    this.move(this.direction, -1);
-    this.direction = { 'север': 'запад', 'юг': 'восток', 'восток': 'север', 'запад': 'юг' }[this.direction];
-  }
-
-  moveRight() {
+    this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
     this.move(this.direction, 1);
-    this.direction = { 'север': 'восток', 'юг': 'запад', 'восток': 'север', 'запад': 'юг' }[this.direction];
+    this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север' }[this.direction];
   }
-
+  
+  moveRight() {
+    this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север' }[this.direction];
+    this.move(this.direction, 1);
+    this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
+  }
+  
   turnLeft() {
     this.direction = { 'север': 'запад', 'юг': 'восток', 'восток': 'север', 'запад': 'юг' }[this.direction];
   }

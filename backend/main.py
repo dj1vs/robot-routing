@@ -2,7 +2,7 @@ import socketio
 import asyncio
 import uvicorn
 
-sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi', logger=True, engineio_logger=True)
+sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
 
 static_files = {
     "/atlas.png": "./public/atlas.png",
@@ -126,7 +126,7 @@ async def moveForward(sid):
             await station.socket.emit("moveForward")
 
 @sio.event
-async def moveBackward(sid):
+async def moveBack(sid):
     for station in stations.values():
         if sid in station.clients:
             await station.socket.emit("moveBackward")
