@@ -76,11 +76,6 @@ function changeMode() {
   socket.emit("changeMode");
 }
 
-function fixCriticalError() {
-  socket.emit("fixing CriticalError");
-  socket.emit("fixCriticalError");
-}
-
 function restart() {
   console.log("restarting...");
   socket.emit("restart");
@@ -141,8 +136,6 @@ socket.on("health", (health) => {
 socket.on("dead", () => {});
 
 socket.on("criticalError", (criticalError) => {});
-
-socket.on("fixCriticalError", () => {});
 
 socket.on("action", (action) => {
   console.log(action)

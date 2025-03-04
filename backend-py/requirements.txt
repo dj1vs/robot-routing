@@ -1,2 +1,0 @@
-python-socketio==5.12.1
-uvicorn==0.34.0

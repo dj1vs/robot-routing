@@ -101,16 +101,6 @@ async def connectToStation(sid, url):
                     await sio.emit("mode", state["mode"], to=client)
         station_socket.on("state", state)
 
-        async def criticalError():
-            for client in stations[url].clients:
-                await sio.emit("criticalError", to=client)
-        station_socket.on("criticalError", criticalError)
-
-        async def fixCriticalError():
-            for client in stations[url].clients:
-                await sio.emit("fixCriticalError", to=client)
-        station_socket.on("fixCriticalError", fixCriticalError)
-
         async def died():
             for client in stations[url].clients:
                 await sio.emit("died", to=client)
@@ -170,12 +160,6 @@ async def changeMode(sid):
     for station in stations.values():
         if sid in station.clients:
             await station.socket.emit("changeMode")
-
-@sio.event
-async def fixCriticalError(sid):
-    for station in stations.values():
-        if sid in station.clients:
-            await station.socket.emit("fixCriticalError")
 
 @sio.event
 async def restart(sid):

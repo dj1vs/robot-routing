@@ -10,8 +10,6 @@
   <!-- 
 #### changeMode
 изменение с автопилота на ручник и наоборот
-#### fixCriticalError
-после оповещения о критической ошибке, надо отправить это событие, чтобы ее устранить
 #### restart
 полное обновление, желательно использовать только после смерти
 #### heal
@@ -25,7 +23,6 @@
 
   -->
   <button onclick="socket.emit('changeMode')">changeMode</button>
-  <button onclick="socket.emit('fixCriticalError')">fixCriticalError</button>
   <button onclick="socket.emit('restart')">restart</button>
   <button onclick="socket.emit('heal')">heal</button>
   <button onclick="socket.emit('moveForward')">moveForward</button>
