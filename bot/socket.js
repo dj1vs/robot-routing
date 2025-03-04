@@ -30,7 +30,7 @@ function disconnectFromStation() {
 
 function moveForward() {
   console.log("move Forward...");
-  socket.emit("moveForward");
+  socket.emit("move", "forward")
   // let angle = Math.round(getCurrentRobotRotationDegrees());
   // if(angle == 0)moveRobotForward(stepSize, 1000, "север");
   // if(angle == 90)moveRobotForward(stepSize, 1000, "восток");
@@ -40,19 +40,19 @@ function moveForward() {
 
 function moveRight() {
   console.log("move Right...");
-  socket.emit("moveRight");
+  socket.emit("move", "right");
   // moveRobotForwardAndRotate(-90, stepSize, 1000);
 }
 
 function moveLeft() {
   console.log("move Left...");
-  socket.emit("moveLeft");
+  socket.emit("move", "left");
   // moveRobotForwardAndRotate(90, stepSize, 1000);
 }
 
 function moveBack() {
   console.log("move back...");
-  socket.emit("moveBack");
+  socket.emit("move", "backward");
   // moveRobotForwardAndRotate(180, stepSize, 1000);
 }
 
@@ -121,11 +121,11 @@ socket.on("state", (state) => {
         || (jsonData.direction == 'запад' && state.direction == 'север')
       )
       {
-        targetRotation = -90
+        targetRotation = 90
       }
       else
       {
-        targetRotation = 90
+        targetRotation = -90
       }
     }
 

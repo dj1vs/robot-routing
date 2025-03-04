@@ -142,11 +142,11 @@ class Robot {
   }
   
   turnLeft() {
-    this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север'}[this.direction];
-  }
-
-  turnRight() {
     this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
+  }
+  
+  turnRight() {
+    this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север'}[this.direction];
   }
 
   changeMode() {

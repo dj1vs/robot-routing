@@ -1,6 +1,27 @@
 import socketio
 import asyncio
 import uvicorn
+from basic.pybasic import pybasic
+from basic.pybasic import global_table
+
+
+move_reg = None
+
+@global_table.reflect('MOVE')
+def move(dir):
+    global move_reg
+    
+    if (dir == 'forward'):
+        move_reg = "moveForward"
+    elif (dir == 'backward'):
+        move_reg = "moveBackward"
+    elif (dir == 'right'):
+        move_reg = "moveRight"
+    elif (dir == 'left'):
+        move_reg = 'moveLeft'
+    else:
+        move_reg = ''
+
 
 sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
 
@@ -120,28 +141,14 @@ async def connectToStation(sid, url):
         await sio.emit("allInfo", info, to=sid)
 
 @sio.event
-async def moveForward(sid):
+async def move(sid, dir):
+    global basic_res
+    pybasic.execute_text(f"MOVE \"{dir}\"")
+    sock_cmd = move_reg
+    print("sock_cmd", sock_cmd, "dir", dir)
     for station in stations.values():
         if sid in station.clients:
-            await station.socket.emit("moveForward")
-
-@sio.event
-async def moveBack(sid):
-    for station in stations.values():
-        if sid in station.clients:
-            await station.socket.emit("moveBackward")
-
-@sio.event
-async def moveLeft(sid):
-    for station in stations.values():
-        if sid in station.clients:
-            await station.socket.emit("moveLeft")
-
-@sio.event
-async def moveRight(sid):
-    for station in stations.values():
-        if sid in station.clients:
-            await station.socket.emit("moveRight")
+            await station.socket.emit(sock_cmd)
 
 @sio.event
 async def turnLeft(sid):
