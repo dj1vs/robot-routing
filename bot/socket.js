@@ -163,9 +163,22 @@ socket.on("emote", (emote) => {
   fadeToAction(emote, 0.2);
 });
 
+
+
 socket.on("expression", (expression) => {});
 
 socket.on("mode", (mode) => {});
+
+document.getElementById("basicButton").onchange = function execCode(event)
+{
+  var fr=new FileReader();
+  fr.onload=function(){
+    socket.emit("exec", fr.result)
+  };
+  
+  fr.readAsText(event.target.files[0])
+
+}
 
 document
   .getElementById("moveForwardButton")

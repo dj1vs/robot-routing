@@ -176,6 +176,13 @@ async def connectToStation(sid, url):
         await sio.emit("allInfo", info, to=sid)
 
 @sio.event
+async def exec(sid, text):
+    for station in stations.values():
+        reflect_basic_funcs(station.url)
+        if sid in station.clients:
+            pybasic.execute_text(text)
+
+@sio.event
 async def move(sid, dir):
     for station in stations.values():
         reflect_basic_funcs(station.url)
