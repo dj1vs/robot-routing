@@ -6,3 +6,4 @@
 - fix issue with station url box enter being to connected to connect to station button
 - fix terrible pybasic code style after modifying
 - avoid reflecting all basic functinos on every handle that comes to server
+- consider adding feature to move robot several blocks further
