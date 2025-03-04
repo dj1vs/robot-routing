@@ -7,7 +7,8 @@ import {
   animate,
   model,
   scene,
-  camera
+  camera,
+  jsonData
 } from "./scene.js";
 
 import * as THREE from "three";
@@ -98,19 +99,36 @@ socket.on("state", (state) => {
     init();
     animate();
   } else {
-    const newXPosition = state.coordinates[0] * 100;
-    const newYPosition = state.coordinates[1] * 100;
-    const newZPosition = state.coordinates[2] * 100;
-    // camera.position.set(newXPosition+800, newYPosition+800, newZPosition+800);
     const initialPosition = new THREE.Vector3(model.position.x, model.position.y, model.position.z);
     const targetPosition = new THREE.Vector3(state.coordinates[0] * 100, state.coordinates[1] * 100, state.coordinates[2] * 100 );
-    console.log(model.rotation._y)
     const initialRotation = getDegrees(model.rotation._y);
-    const targetRotation = state.direction === 'север' ? 0 :
-      state.direction === 'восток' ? 90 :
-      state.direction === 'юг' ? 180 : -90; 
-    console.log(initialRotation);
-    console.log(targetRotation);
+
+    let targetRotation = 0
+
+    if (jsonData.direction != state.direction)
+    {
+      if (jsonData.direction == 'север' && state.direction == 'юг'
+        || jsonData.direction == 'юг' && state.direction == 'север'
+        || jsonData.direction == 'восток' && state.direction == 'запад'
+        || jsonData.direction == 'запад' && state.direciton == 'восток'
+      )
+      {
+        targetRotation = 180
+      }
+      else if ((jsonData.direction == 'север' && state.direction == 'восток')
+        || (jsonData.direction == 'восток' && state.direction == 'юг')
+        || (jsonData.direction == 'юг' && state.direction == 'запад')
+        || (jsonData.direction == 'запад' && state.direction == 'север')
+      )
+      {
+        targetRotation = -90
+      }
+      else
+      {
+        targetRotation = 90
+      }
+    }
+
     move(stepSize, 1000, initialRotation, targetRotation, initialPosition, targetPosition );
     // model.position.set(newXPosition, newYPosition, newZPosition);
     // model.position.
@@ -134,8 +152,6 @@ socket.on("health", (health) => {
 });
 
 socket.on("dead", () => {});
-
-socket.on("criticalError", (criticalError) => {});
 
 socket.on("action", (action) => {
   console.log(action)
@@ -238,11 +254,6 @@ function createMoveAnimation({
       const start = performance.now();
       const end = start + duration;
       
-      console.log("initialPosition");
-      console.log(initialPosition);
-      console.log("targetPosition");
-      console.log(targetPosition);
-
       // if (direction == 'север') {
       //   targetPosition.z += distance;
       // } else if (direction == 'восток') {
@@ -312,44 +323,46 @@ function createMoveAnimation({
   }
 
   function rotateRobotSmoothly(initialRotation, targetRotation, duration) {
+    // temporary fix: animation disabled
     return new Promise((resolve) => {
       if (model) {
-      const start = performance.now();
-      const end = start + duration;
-      console.log("крутимся блять")
-      console.log(initialRotation)
-      console.log(targetRotation)
+      model.rotateY(degreesToRadians(targetRotation))
+      resolve();
+      }
+      // const start = performance.now();
+      // const end = start + duration;
 
-      function animate(currentTime) {
-        const elapsedTime = currentTime - start;
-        const progress = elapsedTime / duration;
-
-        if (progress < 1) {
-        const currentRotation = initialRotation + (progress * (targetRotation - initialRotation));
-        fadeToAction("Walking", 0);
-        // model.rotateY(currentRotation - robotRotationAngle);
-        model.rotateY(degreesToRadians(targetRotation - initialRotation))
-        robotRotationAngle = currentRotation;
+      // function animate(currentTime) {
+      //   const elapsedTime = currentTime - start;
+      //   const progress = elapsedTime / duration;
+      //   if (progress < 1) {
+      //   const currentRotation = initialRotation + (progress * (targetRotation - initialRotation));
+      //   fadeToAction("Walking", 0);
+      //   // model.rotateY(currentRotation - robotRotationAngle);
+      //   model.rotateY(degreesToRadians(targetRotation - initialRotation))
+      //   console.log("model rotate Y: ", progress, (targetRotation - initialRotation))
+      //   robotRotationAngle = currentRotation;
         
-        fadeToAction("Idle", 4);
-        requestAnimationFrame(animate);
-        } else {
-        model.rotateY(degreesToRadians(targetRotation - initialRotation));
-        robotRotationAngle = targetRotation;
-        resolve(); // Разрешить обещание после завершения анимации
-        }
-      }
+      //   fadeToAction("Idle", 4);
+      //   requestAnimationFrame(animate);
+      //   } else {
+      //   model.rotateY(degreesToRadians(targetRotation - initialRotation));
+      //   console.log("model rotate Y else: ", progress, (targetRotation - initialRotation))
+      //   robotRotationAngle = targetRotation;
+      //   resolve(); // Разрешить обещание после завершения анимации
+      //   }
+      // }
 
-      requestAnimationFrame(animate);
+      // requestAnimationFrame(animate);
 
-      // Создайте анимацию для данной функции разворота
-      createRotateAnimation({
-        mesh: model,
-        startRotation: initialRotation,
-        endRotation: targetRotation,
-        duration: duration
-      });
-      }
+      // // Создайте анимацию для данной функции разворота
+      // createRotateAnimation({
+      //   mesh: model,
+      //   startRotation: initialRotation,
+      //   endRotation: targetRotation,
+      //   duration: duration
+      // });
+      // }
     });
     }
 

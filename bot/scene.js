@@ -15,7 +15,7 @@ const worldHalfDepth = worldDepth / 2;
 let renderedBlocksLength = 0;
 
 const api = { state: "Idle" };
-let jsonData = {
+export let jsonData = {
   coordinates: [],
   direction: "север",
   location: "почва",

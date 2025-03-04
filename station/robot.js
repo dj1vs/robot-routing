@@ -40,7 +40,6 @@ class Robot {
   }
 
   move(direction, steps) {
-    console.log('move', direction, steps)
     const current_z = this.coordinates[1];
     let future_coordinates = [...this.coordinates];
 
@@ -58,8 +57,6 @@ class Robot {
         future_coordinates[0] -= steps;
         break;
     }
-
-    console.log(future_coordinates)
 
     if (future_coordinates[0] < 0 || future_coordinates[0] >= map.length) {
       console.log('return 1', future_coordinates[0], map.length)
@@ -131,23 +128,25 @@ class Robot {
   }
 
   moveLeft() {
+    let dir_save = this.direction
     this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
     this.move(this.direction, 1);
-    this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север' }[this.direction];
+    this.direction = dir_save
   }
   
   moveRight() {
+    let dir_save = this.direction
     this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север' }[this.direction];
     this.move(this.direction, 1);
-    this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
+    this.direction = dir_save
   }
   
   turnLeft() {
-    this.direction = { 'север': 'запад', 'юг': 'восток', 'восток': 'север', 'запад': 'юг' }[this.direction];
+    this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север'}[this.direction];
   }
 
   turnRight() {
-    this.direction = { 'север': 'восток', 'юг': 'запад', 'восток': 'юг', 'запад': 'север' }[this.direction];
+    this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
   }
 
   changeMode() {
