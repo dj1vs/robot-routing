@@ -58,12 +58,12 @@ function moveBack() {
 
 function turnRight() {
   console.log("turn right...");
-  socket.emit("turnRight");
+  socket.emit("turn", "right");
 }
 
 function turnLeft() {
   console.log("turn left...");
-  socket.emit("turnLeft");
+  socket.emit("turn", "left");
 }
 
 function heal() {
