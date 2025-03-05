@@ -26,7 +26,7 @@ class Station:
 
 stations = {}
 
-def move_basic(url, dir, delay):
+def send_to_socket(url, cmd, *args):
     global stations
 
     if url not in stations:
@@ -34,6 +34,9 @@ def move_basic(url, dir, delay):
 
     station = stations[url]
 
+    asyncio.get_running_loop().create_task(station.socket.emit(cmd, *args))
+
+def move_basic(url, dir, delay):
     cmd = ''
     if (dir == 'forward'):
         cmd = "moveForward"
@@ -45,16 +48,9 @@ def move_basic(url, dir, delay):
         cmd = 'moveLeft'
     else:
         return
-    
-    asyncio.get_running_loop().create_task(station.socket.emit(cmd, delay))
+    send_to_socket(url, cmd, dir, delay)    
 
 def turn_basic(url, dir):
-    global stations
-
-    if url not in stations:
-        return
-    station = stations[url]
-
     cmd = ''
     if (dir == 'right'):
         cmd = "turnRight"
@@ -62,17 +58,11 @@ def turn_basic(url, dir):
         cmd = 'turnLeft'
     else:
         return
-    
-    asyncio.get_running_loop().create_task(station.socket.emit(cmd))
+
+    send_to_socket(url, cmd, dir)
 
 def heal_basic(url):
-    global stations
-
-    if url not in stations:
-        return
-    station = stations[url]
-
-    asyncio.get_running_loop().create_task(station.socket.emit("heal"))
+    send_to_socket(url, "heal")
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
