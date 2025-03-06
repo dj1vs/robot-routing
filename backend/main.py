@@ -64,14 +64,28 @@ async def turn_basic(url, dir):
 async def heal_basic(url):
     await send_to_socket(url, "heal")
 
-@global_table.reflect('TEST')
-async def test(a):
-    return a * 15
+async def get_robot_location(url):
+    global stations
+
+    if url not in stations:
+        return
+
+    station = stations[url]
+
+    future = asyncio.get_event_loop().create_future()
+
+    async def callback(x):
+        future.set_result(x) 
+
+    await station.socket.emit("currentLocation", "test", callback=callback)
+    return await future
+    
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
     global_table.reflect('TURN', partial(turn_basic, url))
     global_table.reflect('HEAL', partial(heal_basic, url))
+    global_table.reflect('GET_ROBOT_LOCATION', partial(get_robot_location, url))
 
 @sio.event
 async def connect(sid, environ, auth):
@@ -179,20 +193,9 @@ import asyncio
 
 @sio.event
 async def move(sid, dir):
-    await pybasic.execute_text('PRINT TEST(3)')
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            future = asyncio.get_event_loop().create_future()
-
-            async def callback(x):
-                print('location:', x)
-                future.set_result(True)  # Signal that the callback is done
-
-            await station.socket.emit("currentLocation", "test", callback=callback)
-            await future  # Wait until the callback completes
-
-            print('after await')
             await pybasic.execute_text(f"MOVE \"{dir}\", 0")
 
 
