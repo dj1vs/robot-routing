@@ -221,16 +221,6 @@ class Robot {
     }, 1000);
   }
 
-  initCriticalError() {
-    if (this.criticalErrorInterval) {
-      return;
-    }
-    this.criticalError = true;
-    this.criticalErrorInterval = setInterval(() => {
-      this.health -= 100;
-    }, 1000);
-  }
-
   restart() {
     this.coordinates = findFirstCoordinate(); // [x, y, z]
     this.mode = 'ручной';

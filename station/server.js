@@ -77,6 +77,10 @@ io.on('connection', (socket) => {
         robot.turnRight();
     });
 
+    socket.on('currentLocation', (payload, callback) => {
+        callback(robot.getCurrentLocation())
+    })
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
         clearInterval(interval);
