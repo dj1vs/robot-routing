@@ -49,24 +49,16 @@ io.on('connection', (socket) => {
 
     // управление
     socket.on('moveForward', (delay) => {
-        setTimeout(() => {
             robot.moveForward()
-        }, delay)
     });
     socket.on('moveBackward', (delay) => {
-        setTimeout(() => {
             robot.moveBackward()
-        }, delay)
     });
     socket.on('moveLeft', (delay) => {
-        setTimeout(() => {
             robot.moveLeft()
-        }, delay)
     });
     socket.on('moveRight', (delay) => {
-        setTimeout(() => {
             robot.moveRight()
-        }, delay)
     });
 
     socket.on('turnLeft', () => {
@@ -83,7 +75,29 @@ io.on('connection', (socket) => {
 
     socket.on('coordinates', (payload, callback) => {
         callback(robot.coordinates)
-    })
+    });
+
+    socket.on('block', (pos, callback) => {
+        const coords = robot.coordinates
+        const map_copy = map
+        const robot_dir = robot.direction
+
+        const dir_offsets = {
+            'север': { front: [0, 1, 0], back: [0, -1, 0], right: [-1, 0, 0], left: [1, 0, 0] },
+            'юг': { front: [0, -1, 0], back: [0, 1, 0], right: [1, 0, 0], left: [-1, 0, 0] },
+            'восток': { front: [1, 0, 0], back: [-1, 0, 0], right: [0, 1, 0], left: [0, -1, 0] },
+            'запад': { front: [-1, 0, 0], back: [1, 0, 0], right: [0, -1, 0], left: [0, 1, 0] }
+        };
+
+        if (pos === 'under') {
+            callback(map_copy[coords[0]][coords[2]][coords[1]-1]);
+        }
+
+        if (dir_offsets[robot_dir] && dir_offsets[robot_dir][pos]) {
+            const [dx, dy, dz] = dir_offsets[robot_dir][pos];
+            callback(map_copy[coords[0] + dx][coords[2] + dy][coords[1] + dz]);
+        }
+    });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
