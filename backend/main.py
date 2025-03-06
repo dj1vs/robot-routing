@@ -79,13 +79,29 @@ async def get_robot_location(url):
 
     await station.socket.emit("currentLocation", "test", callback=callback)
     return await future
+
+async def get_robot_coordinates(url):
+    global stations
+
+    if url not in stations:
+        return
+
+    station = stations[url]
+
+    future = asyncio.get_event_loop().create_future()
+
+    async def callback(x):
+        future.set_result(x)
     
+    await station.socket.emit("coordinates", "test", callback=callback)
+    return await future
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
     global_table.reflect('TURN', partial(turn_basic, url))
     global_table.reflect('HEAL', partial(heal_basic, url))
     global_table.reflect('GET_ROBOT_LOCATION', partial(get_robot_location, url))
+    global_table.reflect('GET_ROBOT_COORDINATES', partial(get_robot_coordinates, url))
 
 @sio.event
 async def connect(sid, environ, auth):
@@ -204,7 +220,7 @@ async def turn(sid, dir):
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            pybasic.execute_text(f"TURN \"{dir}\"")
+            await pybasic.execute_text(f"TURN \"{dir}\"")
 
 @sio.event
 async def changeMode(sid):
@@ -223,7 +239,7 @@ async def heal(sid):
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            pybasic.execute_text('HEAL')
+            await pybasic.execute_text('HEAL')
 
 @sio.event
 async def emotes(sid, emote):

@@ -81,6 +81,10 @@ io.on('connection', (socket) => {
         callback(robot.getCurrentLocation())
     })
 
+    socket.on('coordinates', (payload, callback) => {
+        callback(robot.coordinates)
+    })
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
         clearInterval(interval);
