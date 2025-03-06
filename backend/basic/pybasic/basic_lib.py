@@ -19,15 +19,15 @@ class BasicStruct:
 
 # console I/O
 @global_table.register('print')
-def basic_print(n):
+async def basic_print(n):
     for node in n:
-        print(node.run(), end=' ')
+        print(await node.run(), end=' ')
     print()
 
 @global_table.register('write')
-def basic_write(n):
+async def basic_write(n):
     for node in n:
-        print(node.run(), end='')
+        print(await node.run(), end='')
 
 
 @global_table.register('input')
@@ -41,19 +41,19 @@ global_table.reflect('close', lambda f: f.close())
 
 
 @global_table.register('fprint')
-def basic_fprint(n):
+async def basic_fprint(n):
     f = n[0].run()
     args = n[1:]
     for node in args:
-        print(node.run(), file=f)
+        print(await node.run(), file=f)
 
 
 @global_table.register('fwrite')
-def basic_fwrite(n):
+async def basic_fwrite(n):
     f = n[0].run()
     args = n[1:]
     for node in args:
-        print(node.run(), end='', file=f)
+        print(await node.run(), end='', file=f)
 
 
 @global_table.register('finput')

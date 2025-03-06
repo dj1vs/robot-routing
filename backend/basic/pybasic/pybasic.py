@@ -639,7 +639,7 @@ def execute(program_name):
         print_error(error)
 
 
-def execute_text(program_text):
+async def execute_text(program_text):
     global parser, ast
     init()
     try:
@@ -647,6 +647,6 @@ def execute_text(program_text):
             parser.parse(line)
         # ast.show()
         # print(f'stack depth = {stack_size2a()}')
-        ast.run()
+        await ast.run()
     except Exception as error:
         print_error(error)

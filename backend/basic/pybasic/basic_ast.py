@@ -104,14 +104,14 @@ class ASTNode:
             if isinstance(node, ASTNode) and node.tree:
                 node.show(layer + 1, node is self.tree[-1])
 
-    def run_flag(self):
+    async def run_flag(self):
         if self.value == '<PROGRAM>':
             for node in self.tree:
-                node.run()
+                await node.run()
 
         elif self.value in ('<SUB>', '<FUNCTION>'):
 
-            def func(n):
+            async def func(n):
                 local_table = SymbolTable(table_stack.top())
                 # compute in caller's level
                 for index, param in enumerate(self.tree[1]):
@@ -120,7 +120,7 @@ class ASTNode:
                 # if len(table_stack) > 50:
                 #    print(f"table_stack too deep {len(table_stack)}")
                 block_node = self.tree[2]
-                result = block_node.run()
+                result = await block_node.run()
                 table_stack.pop()
                 if isinstance(result, ASTControl) and result.msg == 'return':
                     return result.value
@@ -129,13 +129,13 @@ class ASTNode:
 
         elif self.value == '<BLOCK>':
             for node in self.tree:
-                result = node.run()
+                result = await node.run()
                 if isinstance(result, ASTControl):
                     return result
 
         elif self.value == '<SEQ>':
             for node in self.tree:
-                result = node.run()
+                result = await node.run()
                 if isinstance(result, ASTControl):
                     return result
                 elif result is True:
@@ -213,17 +213,17 @@ class ASTNode:
                 runpy.run_path(file_name)
 
     @tracer
-    def run(self):
+    async def run(self):
         if self.type == 'flag':
-            return self.run_flag()
+            return await self.run_flag()
 
         elif self.type == 'funcall':
             func = table_stack.top().get(self.value)
             if isinstance(func, list):
                 getter = item_getter(func)
-                return getter(self.tree)
+                return await getter(self.tree)
             try:
-                return func(self.tree)
+                return await func(self.tree)
             except IndexError:
                 raise BasicError('Wrong number of arguments when calling %s' % self.value)
 

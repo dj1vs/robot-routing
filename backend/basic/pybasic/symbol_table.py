@@ -1,7 +1,7 @@
-#!python3
 import platform
 import math
 import os
+import asyncio
 from .utils import BasicError, Stack
 
 class SymbolTable:
@@ -13,14 +13,14 @@ class SymbolTable:
         id = id.upper()
         if id in self._table:
             return self._table[id]
-        if not id in global_table._table:
+        if id not in global_table._table:
             raise BasicError('undefined variable "%s"' % id)
         else:
             return global_table.get(id)
 
     def set(self, id, value):
         id = id.upper()
-        if id in self._table or not id in global_table._table:
+        if id in self._table or id not in global_table._table:
             self._table[id] = value
             return True
         global_table._table[id] = value
@@ -34,15 +34,18 @@ class SymbolTable:
     
     def reflect(self, id, func=None):
         if func is not None:
-            new_func = lambda n: func(*(x.run() for x in n))
+            async def new_func(n):
+                return await func(*(await asyncio.gather(*(x.run() for x in n))))
             self.set(id, new_func)
         else:
             def decorator(func):
-                new_func = lambda n: func(*(x.run() for x in n))
+                async def new_func(n):
+                    return await func(*(await asyncio.gather(*(x.run() for x in n))))
                 self.set(id, new_func)
                 return new_func
             return decorator
 
+# Global symbol table
 global_table = SymbolTable()
 table_stack = Stack([global_table])
 

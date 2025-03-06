@@ -26,7 +26,7 @@ class Station:
 
 stations = {}
 
-def send_to_socket(url, cmd, *args):
+async def send_to_socket(url, cmd, *args):
     global stations
 
     if url not in stations:
@@ -34,9 +34,9 @@ def send_to_socket(url, cmd, *args):
 
     station = stations[url]
 
-    asyncio.get_running_loop().create_task(station.socket.emit(cmd, *args))
+    await station.socket.emit(cmd, *args)
 
-def move_basic(url, dir, delay):
+async def move_basic(url, dir, delay):
     cmd = ''
     if (dir == 'forward'):
         cmd = "moveForward"
@@ -48,9 +48,9 @@ def move_basic(url, dir, delay):
         cmd = 'moveLeft'
     else:
         return
-    send_to_socket(url, cmd, dir, delay)    
+    await send_to_socket(url, cmd, dir, delay)    
 
-def turn_basic(url, dir):
+async def turn_basic(url, dir):
     cmd = ''
     if (dir == 'right'):
         cmd = "turnRight"
@@ -59,10 +59,14 @@ def turn_basic(url, dir):
     else:
         return
 
-    send_to_socket(url, cmd, dir)
+    await send_to_socket(url, cmd, dir)
 
-def heal_basic(url):
-    send_to_socket(url, "heal")
+async def heal_basic(url):
+    await send_to_socket(url, "heal")
+
+@global_table.reflect('TEST')
+async def test(a):
+    return a * 15
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
@@ -171,13 +175,26 @@ async def exec(sid, text):
         reflect_basic_funcs(station.url)
         if sid in station.clients:
             pybasic.execute_text(text)
+import asyncio
 
 @sio.event
 async def move(sid, dir):
+    await pybasic.execute_text('PRINT TEST(3)')
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            pybasic.execute_text(f"MOVE \"{dir}\", 0")
+            future = asyncio.get_event_loop().create_future()
+
+            async def callback(x):
+                print('location:', x)
+                future.set_result(True)  # Signal that the callback is done
+
+            await station.socket.emit("currentLocation", "test", callback=callback)
+            await future  # Wait until the callback completes
+
+            print('after await')
+            await pybasic.execute_text(f"MOVE \"{dir}\", 0")
+
 
 @sio.event
 async def turn(sid, dir):
