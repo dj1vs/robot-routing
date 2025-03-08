@@ -34,9 +34,19 @@ async def send_to_socket(url, cmd, *args):
 
     station = stations[url]
 
-    await station.socket.emit(cmd, *args)
+    future = asyncio.get_event_loop().create_future()
 
-async def move_basic(url, dir, delay):
+    async def callback(x):
+        future.set_result(x) 
+
+    if (len(args) == 0):
+        await station.socket.emit(cmd, "test", callback=callback)
+    else:
+        await station.socket.emit(cmd, *args, callback=callback)
+
+    return await future
+
+async def move_basic(url, dir):
     cmd = ''
     if (dir == 'forward'):
         cmd = "moveForward"
@@ -48,7 +58,8 @@ async def move_basic(url, dir, delay):
         cmd = 'moveLeft'
     else:
         return
-    await send_to_socket(url, cmd, dir, delay)    
+    
+    await send_to_socket(url, cmd, dir)    
 
 async def turn_basic(url, dir):
     cmd = ''
@@ -110,8 +121,10 @@ async def get_block(url, pos, eyelevel):
         future.set_result(x)
     
     await station.socket.emit("block", {"pos": pos, "eyelevel": eyelevel}, callback=callback)
-    
-    return await future
+
+    result = await future
+
+    return result
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
@@ -222,21 +235,15 @@ async def exec(sid, text):
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            pybasic.execute_text(text)
+            await pybasic.execute_text(text)
 import asyncio
 
 @sio.event
 async def move(sid, dir):
     for station in stations.values():
         reflect_basic_funcs(station.url)
-        await pybasic.execute_text(
-        '''
-        PRINT GET_BLOCK("front", False)
-        PRINT GET_BLOCK("front", True)
-        '''
-        )
         if sid in station.clients:
-            await pybasic.execute_text(f"MOVE \"{dir}\", 0")
+            await pybasic.execute_text(f"MOVE \"{dir}\"")
 
 
 @sio.event

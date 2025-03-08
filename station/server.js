@@ -48,25 +48,37 @@ io.on('connection', (socket) => {
     });
 
     // управление
-    socket.on('moveForward', (delay) => {
-            robot.moveForward()
+    socket.on('moveForward', (data, callback) => {
+        robot.moveForward();
+
+        callback('success')
     });
-    socket.on('moveBackward', (delay) => {
+    socket.on('moveBackward', (data, callback) => {
+            console.log('moveBackward')
             robot.moveBackward()
+            callback('success')
     });
-    socket.on('moveLeft', (delay) => {
+    socket.on('moveLeft', (data, callback) => {
             robot.moveLeft()
+
+            callback('success')
     });
-    socket.on('moveRight', (delay) => {
+    socket.on('moveRight', (data, callback) => {
             robot.moveRight()
+
+            callback('success')
     });
 
-    socket.on('turnLeft', () => {
+    socket.on('turnLeft', (data, callback) => {
         robot.turnLeft();
+
+        callback('success')
     });
 
-    socket.on('turnRight', () => {
+    socket.on('turnRight', (data, callback) => {
         robot.turnRight();
+
+        callback('success')
     });
 
     socket.on('currentLocation', (payload, callback) => {
