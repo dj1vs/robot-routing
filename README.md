@@ -7,9 +7,8 @@
 ## Синтаксис
 
 ```basic
-MOVE <direction> <delay> 'Передвинуть робота на один блок по указанному направлению
+MOVE <direction> 'Передвинуть робота на один блок по указанному направлению
     direction: forward / backward / left / right
-    delay: int
 
 TURN <direction> 'Повернуть робота в указанную сторону
     direction: left/right
