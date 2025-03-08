@@ -59,22 +59,18 @@ class Robot {
     }
 
     if (future_coordinates[0] < 0 || future_coordinates[0] >= map.length) {
-      console.log('return 1', future_coordinates[0], map.length)
       return;
     }
 
     if (future_coordinates[2] < 0 || future_coordinates[2] >= map[0][0].length) {
-      console.log('return 1', future_coordinates[2], map[0][0].length)
       return;
     }
 
     if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
-      console.log('не воздух')
       future_coordinates[1] = current_z + 1;
       if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух'
         && map[future_coordinates[0]][future_coordinates[2] + 1][future_coordinates[1]] !== 'воздух'
       ) {
-        console.log('return 3', future_coordinates[1], map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]])
         return;
       }
     } 
@@ -86,7 +82,6 @@ class Robot {
     future_coordinates[1]++;
 
     if (future_coordinates[1] === 0) {
-      console.log('return 4', future_coordinates[1])
       return;
     }
 
