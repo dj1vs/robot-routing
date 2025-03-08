@@ -174,6 +174,8 @@ document.getElementById("basicButton").onchange = function execCode(event)
   var fr=new FileReader();
   fr.onload=function(){
     socket.emit("exec", fr.result)
+
+    event.target.value = "";
   };
   
   fr.readAsText(event.target.files[0])
