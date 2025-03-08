@@ -143,8 +143,8 @@ class ASTNode:
             return False
 
         elif self.value == '<IF>':
-            if self.tree[0].run() is True:
-                result = self.tree[1].run()
+            if (await self.tree[0].run()) is True:
+                result = (await self.tree[1].run())
                 if isinstance(result, ASTControl):
                     return result
                 return True
@@ -184,8 +184,8 @@ class ASTNode:
                     break
 
         elif self.value == '<WHILE>':
-            while self.tree[0].run() is True:
-                result = self.tree[1].run()
+            while await self.tree[0].run() is True:
+                result = await self.tree[1].run()
                 if isinstance(result, ASTControl):
                     if result.msg == 'break':
                         break

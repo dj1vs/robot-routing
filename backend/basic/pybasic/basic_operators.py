@@ -9,25 +9,98 @@ def basic_plus(n):
         a, b = str(a), str(b)
     return a + b
 
-global_table.set('<MINUS>', lambda n: n[0].run() - n[1].run())
-global_table.set('<TIMES>', lambda n: n[0].run() * n[1].run())
-global_table.set('<DIVIDE>', lambda n: n[0].run() / n[1].run())
-global_table.set('<EXACTDIV>', lambda n: n[0].run() // n[1].run())
-global_table.set('<MOD>', lambda n: n[0].run() % n[1].run())
-global_table.set('<EXP>', lambda n: n[0].run() ** n[1].run())
-global_table.set('<ASSIGN>', lambda n: table_stack.top().set(n[0], n[1].run()))
-global_table.set('<UMINUS>', lambda n: -n[0].run())
-global_table.set('<MEMBER>', lambda n: n[0].run().get(n[1]))
-global_table.set('<GREATER_THAN>', lambda n: n[0].run() > n[1].run())
-global_table.set('<LESS_THAN>', lambda n: n[0].run() < n[1].run())
-global_table.set('<EQUAL_GREATER_THAN>', lambda n: n[0].run() >= n[1].run())
-global_table.set('<EQUAL_LESS_THAN>', lambda n: n[0].run() <= n[1].run())
-global_table.set('<NOT_EQUAL>', lambda n: n[0].run() != n[1].run())
-global_table.set('<EQUAL>', lambda n: n[0].run() == n[1].run())
-global_table.set('<AND>', lambda n: n[0].run() and n[1].run())
-global_table.set('<OR>', lambda n: n[0].run() or n[1].run())
-global_table.set('<NOT>', lambda n: not n[0].run())
-global_table.set('<AS>', lambda n: n[1].run()(n[0].run()))
+async def minus(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a - b
+async def times(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a * b
+async def divide(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a / b
+async def exactdiv(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a // b
+async def mod(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a % b
+async def exp(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return await a ** b
+async def assign(n):
+    n_1 = await n[1].run()
+    table_stack.top().set(n[0], n_1)
+async def uminus(n):
+    a = await n[0].run()
+    return -a
+async def member(n):
+    a = await n[1].run()
+    return a.get(n[1])
+async def greater_than(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a > b
+async def less_than(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a < b
+async def equal_greater_than(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a >= b
+async def equal_less_than(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a <= b
+async def not_equal(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a != b
+async def equal(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a == b
+async def And(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a and b
+async def Or(n):
+    a = await n[0].run()
+    b = await n[1].run()
+    return a or b
+async def Not(n):
+    a = await n[0].run()
+    return not a
+async def As(n):
+    a = await n[0].run()
+    b = await n[0].run()
+    return a(b)
+
+global_table.set('<MINUS>', minus)
+global_table.set('<TIMES>', times)
+global_table.set('<DIVIDE>', divide)
+global_table.set('<EXACTDIV>', exactdiv)
+global_table.set('<MOD>', mod)
+global_table.set('<EXP>', exp)
+global_table.set('<ASSIGN>', assign)
+global_table.set('<MEMBER>', member)
+global_table.set('<GREATER_THAN>', greater_than)
+global_table.set('<LESS_THAN>', less_than)
+global_table.set('<EQUAL_GREATER_THAN>', equal_greater_than)
+global_table.set('<EQUAL_LESS_THAN>', equal_less_than)
+global_table.set('<NOT_EQUAL>', not_equal)
+global_table.set('<EQUAL>', equal)
+global_table.set('<AND>', And)
+global_table.set('<OR>', Or)
+global_table.set('<NOT>', Not)
+global_table.set('<AS>', As)
+
 
 @global_table.register('<DIM_ARRAY>')
 def basic_dim_array(n):
