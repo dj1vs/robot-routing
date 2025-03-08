@@ -26,13 +26,18 @@ io.on('connection', (socket) => {
     
     const interval = setInterval(() => {
         const state = robot.getState();
-        socket.emit('state', state);
-        
+        socket.emit('temperature', state.temperature);
+        socket.emit('health', state.health)
+
         if (state.health <= 0) {
             socket.emit('died');
         }
-
+    
     }, 1000);
+
+    const state = robot.getState();
+    socket.emit('state', state);
+
     // возобновление работы после смерти
     socket.on('restart', () => {
         robot.restart();
@@ -45,26 +50,41 @@ io.on('connection', (socket) => {
 
     socket.on('heal', () => {
         robot.heal();
+        const state = robot.getState();
+        socket.emit('state', state);
     });
 
     // управление
     socket.on('moveForward', (data, callback) => {
         robot.moveForward();
 
+        const state = robot.getState();
+        socket.emit('state', state);
+
         callback('success')
     });
     socket.on('moveBackward', (data, callback) => {
             console.log('moveBackward')
             robot.moveBackward()
+
+            const state = robot.getState();
+            socket.emit('state', state);
+
             callback('success')
     });
     socket.on('moveLeft', (data, callback) => {
             robot.moveLeft()
 
+            const state = robot.getState();
+            socket.emit('state', state);
+
             callback('success')
     });
     socket.on('moveRight', (data, callback) => {
             robot.moveRight()
+
+            const state = robot.getState();
+            socket.emit('state', state);
 
             callback('success')
     });
@@ -72,11 +92,17 @@ io.on('connection', (socket) => {
     socket.on('turnLeft', (data, callback) => {
         robot.turnLeft();
 
+        const state = robot.getState();
+        socket.emit('state', state);
+
         callback('success')
     });
 
     socket.on('turnRight', (data, callback) => {
         robot.turnRight();
+
+        const state = robot.getState();
+        socket.emit('state', state);
 
         callback('success')
     });
@@ -114,7 +140,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        clearInterval(interval);
+        clearInterval(interval)
     });
 });
 

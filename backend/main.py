@@ -212,6 +212,21 @@ async def connectToStation(sid, url):
                     await sio.emit("mode", state["mode"], to=client)
         station_socket.on("state", state)
 
+        async def temperature(temp):
+            # Update temperature
+            if station.currentState.get("temperature") != temp:
+                station.currentState["temperature"] = temp
+                for client in station.clients:
+                    await sio.emit("temperature", temp, to=client)
+        station_socket.on("temperature", temperature)
+
+        async def health(hp):
+            if station.currentState.get("health") != hp:
+                    station.currentState["health"] = hp
+                    for client in station.clients:
+                        await sio.emit("health", hp, to=client)
+        station_socket.on("health", health)
+
         async def died():
             for client in stations[url].clients:
                 await sio.emit("died", to=client)
