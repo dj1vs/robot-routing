@@ -24,8 +24,3 @@ GET_BLOCK <pos> <eyelevel> 'Получить тип блока рядом с р�
     pos: front / back / right / left
     eyelevel: True/ False 'Получить блок на уровне глаз робота
 ```
-
-## Иллюстрации
-
-### `GET_BLOCK`
-![](doc/img/get_block.png)
