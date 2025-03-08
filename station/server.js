@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
         callback(robot.coordinates)
     });
 
-    socket.on('block', (pos, callback) => {
+    socket.on('block', (data, callback) => {
         const coords = robot.coordinates
         const map_copy = map
         const robot_dir = robot.direction
@@ -89,12 +89,13 @@ io.on('connection', (socket) => {
             'запад': { front: [-1, 0, 0], back: [1, 0, 0], right: [0, -1, 0], left: [0, 1, 0] }
         };
 
-        if (pos === 'under') {
+        if (data.pos === 'under') {
             callback(map_copy[coords[0]][coords[2]][coords[1]-1]);
         }
 
-        if (dir_offsets[robot_dir] && dir_offsets[robot_dir][pos]) {
-            const [dx, dy, dz] = dir_offsets[robot_dir][pos];
+        if (dir_offsets[robot_dir] && dir_offsets[robot_dir][data.pos]) {
+            let [dx, dy, dz] = dir_offsets[robot_dir][data.pos];
+            if (data.eyelevel) dz = 1;
             callback(map_copy[coords[0] + dx][coords[2] + dy][coords[1] + dz]);
         }
     });

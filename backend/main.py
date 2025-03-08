@@ -96,7 +96,7 @@ async def get_robot_coordinates(url):
     await station.socket.emit("coordinates", "test", callback=callback)
     return await future
 
-async def get_block(url, pos):
+async def get_block(url, pos, eyelevel):
     global stations
 
     if url not in stations:
@@ -109,7 +109,7 @@ async def get_block(url, pos):
     async def callback(x):
         future.set_result(x)
     
-    await station.socket.emit("block", pos, callback=callback)
+    await station.socket.emit("block", {"pos": pos, "eyelevel": eyelevel}, callback=callback)
     
     return await future
 
@@ -229,6 +229,12 @@ import asyncio
 async def move(sid, dir):
     for station in stations.values():
         reflect_basic_funcs(station.url)
+        await pybasic.execute_text(
+        '''
+        PRINT GET_BLOCK("front", False)
+        PRINT GET_BLOCK("front", True)
+        '''
+        )
         if sid in station.clients:
             await pybasic.execute_text(f"MOVE \"{dir}\", 0")
 
