@@ -192,19 +192,19 @@ document.getElementById("basicButton").addEventListener("click", function(event)
   document.getElementById("basicButtonInput").click();
 });
 
-document.getElementById("basicButtonInput").addEventListener("click", function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+document.getElementById("basicButtonInput").onchange = function(event) {
+  var fr=new FileReader();
+  fr.onload=function(){
+    console.log(fr.result)
 
-  const fr = new FileReader();
+    socket.emit("exec", fr.result)
 
-  fr.onload = function() {
-    socket.emit("exec", fr.result);
-    event.target.value = ""; // reset file input so the same file can be chosen again if needed
+    event.target.value = "";
   };
+  
+  fr.readAsText(event.target.files[0])
 
-  fr.readAsText(file);
-});
+};
 
 
 document
@@ -230,8 +230,6 @@ document.getElementById("error-modal-close-button").addEventListener("click", cl
 document
   .getElementById("disconnect")
   .addEventListener("click", disconnectFromStation);
-
-document.getElementById("changeMode").addEventListener("click", changeMode);
 
 // smooth animation
 let robotPosition = new THREE.Vector3();
