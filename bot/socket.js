@@ -94,6 +94,7 @@ socket.on("allInfo", (state) => {
 });
 
 socket.on("state", (state) => {
+  console.log('hi')
   if (!model) {
     updateData(state);
     init();
@@ -186,18 +187,25 @@ socket.on("expression", (expression) => {});
 
 socket.on("mode", (mode) => {});
 
-document.getElementById("basicButton").onchange = function execCode(event)
+document.getElementById("basicButton").addEventListener("click", function(event)
 {
-  var fr=new FileReader();
-  fr.onload=function(){
-    socket.emit("exec", fr.result)
+  document.getElementById("basicButtonInput").click();
+});
 
-    event.target.value = "";
+document.getElementById("basicButtonInput").addEventListener("click", function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const fr = new FileReader();
+
+  fr.onload = function() {
+    socket.emit("exec", fr.result);
+    event.target.value = ""; // reset file input so the same file can be chosen again if needed
   };
-  
-  fr.readAsText(event.target.files[0])
 
-}
+  fr.readAsText(file);
+});
+
 
 document
   .getElementById("moveForwardButton")
