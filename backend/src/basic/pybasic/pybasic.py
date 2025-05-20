@@ -622,23 +622,6 @@ def init():
 def print_error(error):
     print('ERROR: %s' % error, file=sys.stderr)
 
-
-# Execute a text-based program.
-def execute(program_name):
-    global parser, ast
-    init()
-    f = open(program_name, 'r', encoding="utf8")
-    lines = f.readlines()
-    try:
-        for line in lines:
-            parser.parse(line)
-        # ast.show()
-        # print(f'stack depth = {stack_size2a()}')
-        ast.run()
-    except Exception as error:
-        print_error(error)
-
-
 async def execute_text(program_text):
     global parser, ast
     init()
@@ -649,4 +632,5 @@ async def execute_text(program_text):
         # print(f'stack depth = {stack_size2a()}')
         await ast.run()
     except Exception as error:
-        print_error(error)
+        # print_error(error)
+        return error

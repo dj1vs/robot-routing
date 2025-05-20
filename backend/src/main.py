@@ -132,7 +132,10 @@ async def exec(sid, text):
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
-            await pybasic.execute_text(text)
+            text_result = await pybasic.execute_text(text)
+            if (text_result is not None):
+                await sio.emit("basic_error", str(text_result), to=sid)
+
 import asyncio
 
 @sio.event

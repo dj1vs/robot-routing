@@ -163,6 +163,10 @@ socket.on("emote", (emote) => {
   fadeToAction(emote, 0.2);
 });
 
+socket.on("basic_error", (text) => {
+  console.log(text);
+})
+
 
 
 socket.on("expression", (expression) => {});
