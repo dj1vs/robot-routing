@@ -135,3 +135,58 @@ a, button, input, select {
 .temperature {
 	margin-bottom: -10%;
 }
+
+#error-modal-backdrop {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.6);
+	z-index: 9999;
+	justify-content: center;
+	align-items: center;
+}
+
+#error-modal {
+	background: #222;
+	color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	width: 400px;
+	max-width: 90%;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	font-family: Monospace;
+	animation: fadeIn 0.3s ease-out;
+	text-align: left;
+}
+
+#error-modal button {
+	background: #ff3333;
+	color: white;
+	border: none;
+	padding: 8px 12px;
+	border-radius: 5px;
+	cursor: pointer;
+	float: right;
+}
+
+#error-modal pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	margin-top: 10px;
+	font-size: 0.9em;
+	text-align: left;
+}
+
+@keyframes fadeIn {
+	from {
+		transform: scale(0.9);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}

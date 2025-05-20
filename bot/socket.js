@@ -163,8 +163,21 @@ socket.on("emote", (emote) => {
   fadeToAction(emote, 0.2);
 });
 
+// Show the modal with error text
+function showErrorPopup(errorText) {
+	const backdrop = document.getElementById('error-modal-backdrop');
+	const message = document.getElementById('error-message');
+	message.textContent = errorText;
+	backdrop.style.display = 'flex';
+}
+
+// Hide the modal
+function closeErrorModal() {
+	document.getElementById('error-modal-backdrop').style.display = 'none';
+}
+
 socket.on("basic_error", (text) => {
-  console.log(text);
+  showErrorPopup("BASIC:\n" + text);
 })
 
 
@@ -203,6 +216,8 @@ document.getElementById("turnLeftButton").addEventListener("click", turnLeft );
 document.getElementById("healButton").addEventListener("click", heal);
 
 document.getElementById("connect").addEventListener("click", connectToStation);
+
+document.getElementById("error-modal-close-button").addEventListener("click", closeErrorModal);
 
 document
   .getElementById("disconnect")
