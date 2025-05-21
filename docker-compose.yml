@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3010:3010"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  bot:
+    build:
+      context: ./bot
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  station:
+    build:
+      context: ./station
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

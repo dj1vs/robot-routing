@@ -13,7 +13,7 @@ import {
 
 import * as THREE from "three";
 
-const socket = io("http://127.0.0.1:3010/");
+const socket = io("http://backend:3010/");
 
 let animationsObjects = [];
 
