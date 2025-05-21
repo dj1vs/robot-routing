@@ -55,7 +55,6 @@ async def connectToStation(sid, url):
             if (state["going_circles"] == True):
                 global going_circles
                 going_circles.set()
-                print('GOING CIRCLES: ', going_circles.is_set())
 
             # Update local map
             for near_location in state["nearLocations"]:
@@ -131,7 +130,6 @@ async def connectToStation(sid, url):
     if url in stations:
         station = stations[url]
         info = {**station.currentState, "nearLocations": station.localMap}
-        print("Sending allInfo:", info)
         await sio.emit("allInfo", info, to=sid)
 
 @sio.event
