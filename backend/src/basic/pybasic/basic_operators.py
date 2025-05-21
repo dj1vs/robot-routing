@@ -3,8 +3,8 @@ from .utils import BasicError
 
 
 @global_table.register('<PLUS>')
-def basic_plus(n):
-    a, b = n[0].run(), n[1].run()
+async def basic_plus(n):
+    a, b = await n[0].run(), await n[1].run()
     if isinstance(a, str) or isinstance(b, str):
         a, b = str(a), str(b)
     return a + b
