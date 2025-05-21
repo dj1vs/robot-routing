@@ -56,6 +56,7 @@ io.on('connection', (socket) => {
 
     // управление
     socket.on('moveForward', (data, callback) => {
+        console.log('forward')
         robot.moveForward();
 
         const state = robot.getState();
@@ -64,13 +65,12 @@ io.on('connection', (socket) => {
         callback('success')
     });
     socket.on('moveBackward', (data, callback) => {
-            console.log('moveBackward')
-            robot.moveBackward()
+        robot.moveBackward()
 
-            const state = robot.getState();
-            socket.emit('state', state);
+        const state = robot.getState();
+        socket.emit('state', state);
 
-            callback('success')
+        callback('success')
     });
     socket.on('moveLeft', (data, callback) => {
             robot.moveLeft()
@@ -193,8 +193,18 @@ io.on('connection', (socket) => {
                 return;
             }
         }
-
     });
+
+    socket.on("start_basic_program", (data, callback) => {
+        console.log('start_basic_program', data)
+        robot.activate_expert_system();
+        callback('success')
+    })
+    socket.on("end_basic_program", (data, callback) => {
+        console.log('end_basic_program', data)
+        robot.deactivate_expert_system();
+        callback('success')
+    })
 
     socket.on('disconnect', () => {
         console.log('user disconnected');

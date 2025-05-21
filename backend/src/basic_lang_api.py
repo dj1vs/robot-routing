@@ -11,6 +11,7 @@ class Station:
         self.url = url
 
 stations = {}
+going_circles = asyncio.Event()
 
 async def send_to_socket(url, cmd, *args):
     global stations
@@ -104,6 +105,7 @@ async def get_block(url, pos, eyelevel):
     future = asyncio.get_event_loop().create_future()
 
     async def callback(x):
+        asyncio.sleep(0.1)
         future.set_result(x)
     
     await station.socket.emit("block", {"pos": pos, "eyelevel": eyelevel}, callback=callback)

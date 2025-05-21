@@ -181,6 +181,10 @@ socket.on("basic_error", (text) => {
   showErrorPopup("BASIC:\n" + text);
 })
 
+socket.on("runtime_error", (text) => {
+  showErrorPopup("Экспертная система:\n" + text);
+})
+
 
 
 socket.on("expression", (expression) => {});

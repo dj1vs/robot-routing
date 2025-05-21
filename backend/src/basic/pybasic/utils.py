@@ -29,6 +29,9 @@ class RootStack(Stack):
 class BasicError(Exception):
     pass
 
+class GoingCirclesError(Exception):
+    pass
+
 def item_getter(x):
     def getter(args):
         result = x

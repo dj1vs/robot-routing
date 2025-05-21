@@ -1,4 +1,5 @@
 const { map, findFirstCoordinate } = require("./map");
+const ExpertSystem = require("./expret_system")
 
 class Robot {
   constructor() {
@@ -9,6 +10,9 @@ class Robot {
     this.criticalError = false;
     this.criticalErrorInterval = null;
     this.autoModeInterval = null;
+    this.expert_system = undefined;
+    this.going_circles = false;
+    this.executing_basic_program = false;
   }
 
   getStationTemperature() {
@@ -90,6 +94,17 @@ class Robot {
       this.health -= delta * 100;
     }
     
+
+    // При включенной экспертной системе, обрабатываем движения
+    if (this.executing_basic_program == true)
+    {
+      this.expert_system.process_new_coord(future_coordinates);
+      if (this.expert_system.get_moves_without_new_coordinates() == 10)
+      {
+        this.going_circles = true;
+      }
+    }
+
     // В зависимости от поверхности изменяем координаты с задержкой
     switch (this.getCurrentLocation()) {
       case 'песок':
@@ -244,7 +259,21 @@ class Robot {
       location: this.getCurrentLocation(),
       nearLocations: this.getNearLocation(5),
       timestamp: Date.now(),
+      going_circles: this.going_circles
     }
+  }
+
+  activate_expert_system()
+  {
+    this.expert_system = new ExpertSystem()
+    this.executing_basic_program = true;
+  }
+
+  deactivate_expert_system()
+  {
+    this.going_circles = false
+    this.expert_system = null
+    this.executing_basic_program = false;
   }
 }
 

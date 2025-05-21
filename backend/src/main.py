@@ -3,7 +3,9 @@ import asyncio
 import uvicorn
 from basic.pybasic import pybasic
 
-from basic_lang_api import Station, stations, reflect_basic_funcs
+from basic_lang_api import Station, stations, reflect_basic_funcs, going_circles
+
+from basic.pybasic.utils import BasicError, GoingCirclesError
 
 sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
 
@@ -49,6 +51,11 @@ async def connectToStation(sid, url):
             if url not in stations:
                 return
             station = stations[url]
+
+            if (state["going_circles"] == True):
+                global going_circles
+                going_circles.set()
+                print('GOING CIRCLES: ', going_circles.is_set())
 
             # Update local map
             for near_location in state["nearLocations"]:
@@ -132,9 +139,22 @@ async def exec(sid, text):
     for station in stations.values():
         reflect_basic_funcs(station.url)
         if sid in station.clients:
+            future = asyncio.get_event_loop().create_future()
+            async def callback(x):
+                future.set_result(x)
+            await station.socket.emit("start_basic_program", {'plug': 'plug'}, callback = callback)
+            await future
+            
             text_result = await pybasic.execute_text(text)
-            if (text_result is not None):
-                await sio.emit("basic_error", str(text_result), to=sid)
+
+            future = asyncio.get_event_loop().create_future()
+            await station.socket.emit("end_basic_program", {'plug': 'plug'}, callback = callback)
+            await future
+
+            if isinstance(text_result, GoingCirclesError):
+                await sio.emit("runtime_error", str(text_result), to=sid)
+            elif isinstance(text_result, BasicError):
+                await sio.emit("basic_error", str(text_result), to=sid)            
 
 import asyncio
 
@@ -199,5 +219,4 @@ async def disconnect(sid):
             stations.pop(station.url, None)
 
 if __name__ == '__main__':
-    
     uvicorn.run(app, host="0.0.0.0", port=3010)

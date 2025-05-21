@@ -8,9 +8,11 @@ from . import basic_lib
 from . import basic_operators
 from . import basic_types
 from .symbol_table import SymbolTable, global_table, table_stack
-from .utils import Stack, item_getter, BasicError
+from .utils import Stack, item_getter, BasicError, GoingCirclesError
 
 from itertools import count
+
+from basic_lang_api import going_circles
 
 # https://www.coder.work/article/1249259
 def stack_size2a(size=2):
@@ -214,6 +216,10 @@ class ASTNode:
 
     @tracer
     async def run(self):
+        print('BASIC AST: ', going_circles.is_set())
+        if (going_circles.is_set()):
+            going_circles.clear()
+            raise GoingCirclesError('Робот слишком долго не открывает новые клетки!')
         if self.type == 'flag':
             return await self.run_flag()
 
