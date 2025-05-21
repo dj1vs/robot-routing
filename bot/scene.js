@@ -64,7 +64,7 @@ export function init() {
 
   const loader = new GLTFLoader();
   loader.load(
-    "http://backend:3010/RobotExpressive.glb",
+    "http://localhost:3010/RobotExpressive.glb",
     function (gltf) {
       model = gltf.scene;
       model.scale.set(32, 32, 32);
@@ -287,7 +287,7 @@ export function addSide() {
     let texture;
     if (location === "почва") {
       texture = new THREE.TextureLoader().load(
-        "http://backend:3010/atlas.png"
+        "http://localhost:3010/atlas.png"
       );
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.magFilter = THREE.NearestFilter;
@@ -297,7 +297,7 @@ export function addSide() {
       });
     } else if (location === "кислотная поверхность") {
       texture = new THREE.TextureLoader().load(
-        "http://backend:3010/poison.png"
+        "http://localhost:3010/poison.png"
       );
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.magFilter = THREE.NearestFilter;
@@ -307,7 +307,7 @@ export function addSide() {
       });
     } else if (location === "песок") {
       texture = new THREE.TextureLoader().load(
-        "http://backend:3010/mud.png"
+        "http://localhost:3010/mud.png"
       );
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.magFilter = THREE.NearestFilter;
