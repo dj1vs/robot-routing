@@ -94,7 +94,7 @@ export function init() {
   container.appendChild(renderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enablePan = false;
+  controls.enablePan = true;
   controls.enableZoom = true;
   controls.target.set(...jsonData.coordinates.map((x) => x * 100));
   controls.update();
