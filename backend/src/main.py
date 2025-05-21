@@ -2,12 +2,19 @@ import socketio
 import asyncio
 import uvicorn
 from basic.pybasic import pybasic
+import logging
+
+uvicorn_error = logging.getLogger("uvicorn.error")
+uvicorn_error.disabled = True
+uvicorn_access = logging.getLogger("uvicorn.access")
+uvicorn_access.disabled = True
+
 
 from basic_lang_api import Station, stations, reflect_basic_funcs, going_circles
 
 from basic.pybasic.utils import BasicError, GoingCirclesError
 
-sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
+sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi', log_output=False, debug=False)
 
 static_files = {
     "/atlas.png": "./public/atlas.png",
@@ -20,7 +27,6 @@ app = socketio.ASGIApp(sio, static_files=static_files)
 
 @sio.event
 async def connect(sid, environ, auth):
-    print(f'NEW USER!!! {sid} {environ} {auth}')
     return True
 
 @sio.event
