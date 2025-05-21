@@ -314,7 +314,7 @@ function createMoveAnimation({
         initialPosition.y === targetPosition.y && 
         initialPosition.z === targetPosition.z 
       ) {
-        rotateRobotSmoothly(initialRotation, targetRotation, 1000);
+        rotateRobotSmoothly(initialRotation, targetRotation, 500);
         return;
       }
 
@@ -368,45 +368,18 @@ function createMoveAnimation({
 
   function rotateRobotSmoothly(initialRotation, targetRotation, duration) {
     // temporary fix: animation disabled
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (model) {
-      model.rotateY(degreesToRadians(targetRotation))
-      resolve();
+        let steps = 25;
+        let step_dur = duration / steps;
+
+        for (let i = 0; i < steps; i++) {
+          model.rotateY(degreesToRadians(targetRotation/steps));
+          await new Promise(r => setTimeout(r, step_dur));
+        }
+        resolve();
       }
-      // const start = performance.now();
-      // const end = start + duration;
 
-      // function animate(currentTime) {
-      //   const elapsedTime = currentTime - start;
-      //   const progress = elapsedTime / duration;
-      //   if (progress < 1) {
-      //   const currentRotation = initialRotation + (progress * (targetRotation - initialRotation));
-      //   fadeToAction("Walking", 0);
-      //   // model.rotateY(currentRotation - robotRotationAngle);
-      //   model.rotateY(degreesToRadians(targetRotation - initialRotation))
-      //   console.log("model rotate Y: ", progress, (targetRotation - initialRotation))
-      //   robotRotationAngle = currentRotation;
-        
-      //   fadeToAction("Idle", 4);
-      //   requestAnimationFrame(animate);
-      //   } else {
-      //   model.rotateY(degreesToRadians(targetRotation - initialRotation));
-      //   console.log("model rotate Y else: ", progress, (targetRotation - initialRotation))
-      //   robotRotationAngle = targetRotation;
-      //   resolve(); // Разрешить обещание после завершения анимации
-      //   }
-      // }
-
-      // requestAnimationFrame(animate);
-
-      // // Создайте анимацию для данной функции разворота
-      // createRotateAnimation({
-      //   mesh: model,
-      //   startRotation: initialRotation,
-      //   endRotation: targetRotation,
-      //   duration: duration
-      // });
-      // }
     });
     }
 
