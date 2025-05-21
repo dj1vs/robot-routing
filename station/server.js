@@ -56,7 +56,6 @@ io.on('connection', (socket) => {
 
     // управление
     socket.on('moveForward', async (data, callback) => {
-        console.log('forward')
         await robot.moveForward();
 
         const state = robot.getState();
@@ -89,8 +88,8 @@ io.on('connection', (socket) => {
             callback('success')
     });
 
-    socket.on('turnLeft', (data, callback) => {
-        robot.turnLeft();
+    socket.on('turnLeft', async (data, callback) => {
+        await robot.turnLeft();
 
         const state = robot.getState();
         socket.emit('state', state);
@@ -98,8 +97,8 @@ io.on('connection', (socket) => {
         callback('success')
     });
 
-    socket.on('turnRight', (data, callback) => {
-        robot.turnRight();
+    socket.on('turnRight', async (data, callback) => {
+        await robot.turnRight();
 
         const state = robot.getState();
         socket.emit('state', state);

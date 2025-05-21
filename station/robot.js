@@ -117,7 +117,6 @@ class Robot {
         await new Promise(r => setTimeout(r, 4000));
         break;
       default:
-        await new Promise(r => setTimeout(r, 1000));
         break;
     }
     this.coordinates = future_coordinates;
@@ -147,11 +146,11 @@ class Robot {
     this.direction = dir_save
   }
   
-  turnLeft() {
+  async turnLeft() {
     this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
   }
   
-  turnRight() {
+  async turnRight() {
     this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север'}[this.direction];
   }
 
