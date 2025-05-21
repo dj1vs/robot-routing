@@ -6,8 +6,6 @@ class ExpertSystem
     }
 
     process_new_coord(new_coord) {
-        console.log(this.moves_without_new_coordinates)
-
         const alreadyVisited = this.visited_coordinates.findIndex(coord =>
             coord.x === new_coord.x && coord.y === new_coord.y
         );
