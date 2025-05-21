@@ -82,6 +82,7 @@ async def As(n):
     b = await n[0].run()
     return a(b)
 
+global_table.set('<UMINUS>', uminus)
 global_table.set('<MINUS>', minus)
 global_table.set('<TIMES>', times)
 global_table.set('<DIVIDE>', divide)
@@ -117,7 +118,7 @@ def basic_assign_array(n):
     try:
         py_list[py_count] = exp
     except IndexError:
-        raise BasicError('Index %d is out of range (maximum %d)' % (py_count, len(py_list)))
+        raise BasicError('Индекс %d выходит за границы промежутка (максимум - %d)' % (py_count, len(py_list)))
 
 @global_table.register('<ASSIGN_MEMBER>')
 def basic_assign_member(n):

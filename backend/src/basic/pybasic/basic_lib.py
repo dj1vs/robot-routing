@@ -14,7 +14,7 @@ class BasicStruct:
         try:
             return self.member[name]
         except KeyError as error:
-            raise BasicError('Member %s is undefined' % str(error))
+            raise BasicError('Поле %s не определено' % str(error))
 
 
 # console I/O

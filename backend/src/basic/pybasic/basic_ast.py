@@ -216,6 +216,7 @@ class ASTNode:
 
     @tracer
     async def run(self):
+        print(self)
         if (going_circles.is_set()):
             going_circles.clear()
             raise GoingCirclesError('Робот слишком долго не открывает новые клетки!')
@@ -230,7 +231,7 @@ class ASTNode:
             try:
                 return await func(self.tree)
             except IndexError:
-                raise BasicError('Wrong number of arguments when calling %s' % self.value)
+                raise BasicError('Неправильное количество аргументов при вызове %s' % self.value)
 
         elif self.type == 'id':
             return table_stack.top().get(self.value)

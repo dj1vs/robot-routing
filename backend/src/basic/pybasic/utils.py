@@ -41,6 +41,6 @@ def item_getter(x):
             try:
                 result = result[py_count]
             except IndexError:
-                raise BasicError('Index %d is out of range (maximum %d)' % (basic_count, len(result)))
+                raise BasicError('Индекс %d выходит за границы промежутка (максимум - %d)' % (basic_count, len(result)))
         return result
     return getter

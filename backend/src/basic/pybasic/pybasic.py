@@ -318,7 +318,7 @@ def init():
         current_root = root_stack.top()
         if_node = current_root.parent
         if if_node.value != '<IF>':
-            raise BasicError('ELSE without IF')
+            raise BasicError('ELSE без IF')
         seq_node = if_node.parent
         p[0] = ASTNode(type='flag', value='<IF>', parent=if_node)
         p[0].add_group([
@@ -337,7 +337,7 @@ def init():
         current_root = root_stack.top()
         if_node = current_root.parent
         if if_node.value != '<IF>':
-            raise BasicError('ELSEIF without IF')
+            raise BasicError('ELSEIF без IF')
         seq_node = if_node.parent
         p[0] = ASTNode(type='flag', value='<IF>', parent=if_node)
         p[0].add_group([
@@ -390,7 +390,7 @@ def init():
                 seq_node = if_node.parent
                 assert seq_node.value == '<SEQ>'
             except Exception:
-                raise BasicError('CASE without SELECT')
+                raise BasicError('CASE без SELECT')
             seq_node.add(p[0])
             root_stack.pop()
         root_stack.push(p[0].block)
@@ -414,7 +414,7 @@ def init():
                 seq_node = if_node.parent
                 assert seq_node.value == '<SEQ>'
             except Exception:
-                raise BasicError('CASE without SELECT')
+                raise BasicError('CASE без SELECT')
             seq_node.add(p[0])
             root_stack.pop()
         root_stack.push(p[0].block)
@@ -475,7 +475,7 @@ def init():
         '''
         current_root = root_stack.top()
         if current_root.parent.value != '<IF>':
-            raise BasicError('END IF without IF')
+            raise BasicError('END IF без IF')
 
     def p_select_block_end(p):
         '''
@@ -484,7 +484,7 @@ def init():
         global select_var_count
         current_root = root_stack.top()
         if current_root.parent.value != '<IF>':
-            raise BasicError('END SELECT without SELECT')
+            raise BasicError('END SELECT без SELECT')
         select_var_count -= 1
 
     def p_while_block_end(p):
@@ -493,8 +493,8 @@ def init():
                   | WEND
         '''
         current_root = root_stack.top()
-        if current_root.parent.value != '<WHILE>':
-            raise BasicError('END WHILE without WHILE')
+        if (current_root.parent is None) or (current_root.parent.value != '<WHILE>'):
+            raise BasicError('END WHILE без WHILE')
 
     def p_for_block_end(p):
         '''
@@ -504,9 +504,9 @@ def init():
         current_root = root_stack.top()
         for_node = current_root.parent
         if for_node.value != '<FOR>':
-            raise BasicError('END FOR without FOR')
+            raise BasicError('END FOR без FOR')
         if p[1] == 'NEXT' and p[2] != for_node.tree[0].value:
-            raise BasicError('Unmatched NEXT %s with %s' % p[2])
+            raise BasicError('Несматченный NEXT %s с %s' % p[2])
 
     def p_do_block_end(p):
         '''
@@ -516,8 +516,9 @@ def init():
         '''
         current_root = root_stack.top()
         do_node = current_root.parent
+        print('PDOBLOCKEND', do_node.value)
         if do_node.value != '<DO>':
-            raise BasicError('LOOP without DO')
+            raise BasicError('LOOP без DO')
         if len(p) == 2:
             do_node.tree[0] = ASTNode.TrueNode()
         elif p[2] == 'WHILE':
@@ -533,7 +534,7 @@ def init():
         current_root = root_stack.top()
         func_node = current_root.parent
         if func_node.value != '<%s>' % p[2]:
-            raise BasicError('END %s without %s' % (p[2], p[2]))
+            raise BasicError('END %s без %s' % (p[2], p[2]))
 
     def p_return(p):
         '''
@@ -543,9 +544,9 @@ def init():
         current_root = root_stack.closure_top()
         func_node = current_root.parent
         if len(p) == 2 and func_node.value not in ('<FUNCTION>', '<SUB>'):
-            raise BasicError('RETURN without FUNCTION or SUB')
+            raise BasicError('RETURN без FUNCTION или SUB')
         if len(p) == 3 and func_node.value != '<FUNCTION>':
-            raise BasicError('RETURN value without FUNCTION')
+            raise BasicError('RETURN значения без FUNCTION')
         p[0] = ASTNode(type='flag', value='<RETURN>')
         if len(p) == 2:
             p[0].add(ASTNode.NothingNode())
@@ -567,7 +568,7 @@ def init():
         current_root = root_stack.control_top()
         node = current_root.parent
         if node.value != '<%s>' % p[2]:
-            raise BasicError('EXIT %s without %s' % (p[2], p[2]))
+            raise BasicError('EXIT %s без %s' % (p[2], p[2]))
         p[0] = ASTNode(type='flag', value='<BREAK>')
 
     def p_control_continue(p):
@@ -579,7 +580,7 @@ def init():
         current_root = root_stack.control_top()
         node = current_root.parent
         if node.value != '<%s>' % p[2]:
-            raise BasicError('CONTINUE %s without %s' % (p[2], p[2]))
+            raise BasicError('CONTINUE %s без %s' % (p[2], p[2]))
         p[0] = ASTNode(type='flag', value='<CONTINUE>')
 
     def p_use_statement(p):
@@ -607,13 +608,13 @@ def init():
             p[0].add(lib_module_name)
             current_root.add(p[0])
         else:
-            raise BasicError('No such module: %s' % p[2])
+            raise BasicError('Модуль не найден: %s' % p[2])
 
     # Error rule for syntax errors.
     def p_error(p):
         # blank lines or errors
         if p is not None:
-            raise BasicError('Syntax error on line %d' % p.lineno)
+            raise BasicError('Ошибка синтаксиса на строке %d' % p.lineno)
 
     # Build the parser.
     parser = yacc.yacc()

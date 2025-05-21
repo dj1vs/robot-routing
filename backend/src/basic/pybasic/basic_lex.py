@@ -77,7 +77,7 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 # Error handling rules.
 def t_error(t):
-    raise BasicError('Illegal character: "%s"' % t.value[0])
+    raise BasicError('Неизвестный символ: "%s"' % t.value[0])
 
 # Build the lexer.
 lexer = lex.lex()

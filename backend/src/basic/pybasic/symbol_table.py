@@ -14,7 +14,7 @@ class SymbolTable:
         if id in self._table:
             return self._table[id]
         if id not in global_table._table:
-            raise BasicError('undefined variable "%s"' % id)
+            raise BasicError('переменная не определена: "%s"' % id)
         else:
             return global_table.get(id)
 
