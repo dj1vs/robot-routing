@@ -159,6 +159,9 @@ async def exec(sid, text):
                 await sio.emit("runtime_error", str(text_result), to=sid)
             elif isinstance(text_result, BasicError):
                 await sio.emit("basic_error", str(text_result), to=sid)            
+            elif text_result is not None:
+                await sio.emit("basic_error", str(text_result), to=sid)
+                print(text_result)
 
 import asyncio
 
