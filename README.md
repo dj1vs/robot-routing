@@ -22,4 +22,7 @@ GET_ROBOT_LOCATION 'Получить тип блока, на котором на
 GET_BLOCK <pos> <eyelevel> 'Получить тип блока рядом с роботом
     pos: front / back / right / left
     eyelevel: True/ False 'Получить блок на уровне глаз робота
+
+DEPTH <pos> 'Получить глубину падения до ближайшего блока
+    pos: front / back / right / left
 ```
