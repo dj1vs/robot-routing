@@ -63,75 +63,16 @@ async def heal_basic(url):
     await send_to_socket(url, "heal")
 
 async def get_robot_location(url):
-    global stations
-
-    if url not in stations:
-        return
-
-    station = stations[url]
-
-    future = asyncio.get_event_loop().create_future()
-
-    async def callback(x):
-        future.set_result(x) 
-
-    await station.socket.emit("currentLocation", "test", callback=callback)
-    return await future
+    return await send_to_socket(url, 'currentLocation', 'test')
 
 async def get_robot_coordinates(url):
-    global stations
-
-    if url not in stations:
-        return
-
-    station = stations[url]
-
-    future = asyncio.get_event_loop().create_future()
-
-    async def callback(x):
-        future.set_result(x)
-    
-    await station.socket.emit("coordinates", "test", callback=callback)
-    return await future
+    return await send_to_socket(url, 'coordinates', 'test')
 
 async def get_block(url, pos, eyelevel):
-    global stations
-
-    if url not in stations:
-        return
-    
-    station = stations[url]
-
-    future = asyncio.get_event_loop().create_future()
-
-    async def callback(x):
-        asyncio.sleep(0.1)
-        future.set_result(x)
-    
-    await station.socket.emit("block", {"pos": pos, "eyelevel": eyelevel}, callback=callback)
-
-    result = await future
-
-    return result
+    return await send_to_socket(url, 'block', {"pos": pos, "eyelevel": eyelevel})
 
 async def depth(url, pos):
-    global stations
-
-    if url not in stations:
-        return
-    
-    station = stations[url]
-
-    future = asyncio.get_event_loop().create_future()
-
-    async def callback(x):
-        future.set_result(x)
-
-    await station.socket.emit("depth", {"pos": pos}, callback = callback)
-
-    result = await future
-
-    return result
+    return await send_to_socket(url, 'depth', {'pos': pos})
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))

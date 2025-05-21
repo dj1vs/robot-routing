@@ -43,7 +43,7 @@ class Robot {
     return temperature;
   }
 
-  move(direction, steps) {
+  async move(direction, steps) {
     const current_z = this.coordinates[1];
     let future_coordinates = [...this.coordinates];
 
@@ -108,46 +108,42 @@ class Robot {
     // В зависимости от поверхности изменяем координаты с задержкой
     switch (this.getCurrentLocation()) {
       case 'песок':
-        setTimeout(() => {
-          this.coordinates = future_coordinates;
-        }, 5000);
+        await new Promise(r => setTimeout(r, 2000));
         break;
       case 'кислотная поверхность':
-        setTimeout(() => {
-          this.coordinates = future_coordinates;
-        }, 5000);
+        await new Promise(r => setTimeout(r, 3000));
         break;
       case 'вода':
-        setTimeout(() => {
-          this.coordinates = future_coordinates;
-        }, 10000);
+        await new Promise(r => setTimeout(r, 4000));
         break;
       default:
-        this.coordinates = future_coordinates;
+        await new Promise(r => setTimeout(r, 1000));
+        break;
     }
+    this.coordinates = future_coordinates;
   }
 
-  moveForward() {
-    this.move(this.direction, 1);
+  async moveForward() {
+    await this.move(this.direction, 1);
   }
 
 // 26/47
 
-  moveBackward() {
-    this.move(this.direction, -1);
+  async moveBackward() {
+    await this.move(this.direction, -1);
   }
 
-  moveLeft() {
+  async moveLeft() {
     let dir_save = this.direction
     this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
-    this.move(this.direction, 1);
+    await this.move(this.direction, 1);
     this.direction = dir_save
   }
   
-  moveRight() {
+  async moveRight() {
     let dir_save = this.direction
     this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север' }[this.direction];
-    this.move(this.direction, 1);
+    await this.move(this.direction, 1);
     this.direction = dir_save
   }
   

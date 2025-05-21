@@ -55,33 +55,33 @@ io.on('connection', (socket) => {
     });
 
     // управление
-    socket.on('moveForward', (data, callback) => {
+    socket.on('moveForward', async (data, callback) => {
         console.log('forward')
-        robot.moveForward();
+        await robot.moveForward();
 
         const state = robot.getState();
         socket.emit('state', state);
 
         callback('success')
     });
-    socket.on('moveBackward', (data, callback) => {
-        robot.moveBackward()
+    socket.on('moveBackward', async (data, callback) => {
+        await robot.moveBackward()
 
         const state = robot.getState();
         socket.emit('state', state);
 
         callback('success')
     });
-    socket.on('moveLeft', (data, callback) => {
-            robot.moveLeft()
+    socket.on('moveLeft', async (data, callback) => {
+            await robot.moveLeft()
 
             const state = robot.getState();
             socket.emit('state', state);
 
             callback('success')
     });
-    socket.on('moveRight', (data, callback) => {
-            robot.moveRight()
+    socket.on('moveRight', async (data, callback) => {
+            await robot.moveRight()
 
             const state = robot.getState();
             socket.emit('state', state);
