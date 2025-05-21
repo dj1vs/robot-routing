@@ -308,13 +308,14 @@ function createMoveAnimation({
       //   targetPosition.x -= distance;
       // }
 
+      rotateRobotSmoothly(initialRotation, targetRotation, 200);
+
       /** если робот сделал только поворот */
       if (
         initialPosition.x === targetPosition.x && 
         initialPosition.y === targetPosition.y && 
         initialPosition.z === targetPosition.z 
       ) {
-        rotateRobotSmoothly(initialRotation, targetRotation, 500);
         return;
       }
 
