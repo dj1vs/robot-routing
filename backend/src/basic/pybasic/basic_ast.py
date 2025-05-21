@@ -216,7 +216,6 @@ class ASTNode:
 
     @tracer
     async def run(self):
-        print(self)
         if (going_circles.is_set()):
             going_circles.clear()
             raise GoingCirclesError('Робот слишком долго не открывает новые клетки!')
