@@ -13,7 +13,7 @@ class Station:
 stations = {}
 going_circles = asyncio.Event()
 
-async def send_to_socket(url, cmd, *args):
+async def send_to_socket(url, cmd, wait, *args):
     global stations
 
     if url not in stations:
@@ -24,6 +24,8 @@ async def send_to_socket(url, cmd, *args):
     future = asyncio.get_event_loop().create_future()
 
     async def callback(x):
+        if wait:
+            await asyncio.sleep(1)
         future.set_result(x) 
 
     if (len(args) == 0):
@@ -46,7 +48,7 @@ async def move_basic(url, dir):
     else:
         return
     
-    await send_to_socket(url, cmd, dir)    
+    await send_to_socket(url, cmd, True, dir)    
 
 async def turn_basic(url, dir):
     cmd = ''
@@ -57,22 +59,22 @@ async def turn_basic(url, dir):
     else:
         return
 
-    await send_to_socket(url, cmd, dir)
+    await send_to_socket(url, cmd, True, dir)
 
 async def heal_basic(url):
-    await send_to_socket(url, "heal")
+    await send_to_socket(url, "heal", False)
 
 async def get_robot_location(url):
-    return await send_to_socket(url, 'currentLocation', 'test')
+    return await send_to_socket(url, 'currentLocation', False, 'test')
 
 async def get_robot_coordinates(url):
-    return await send_to_socket(url, 'coordinates', 'test')
+    return await send_to_socket(url, 'coordinates',False, 'test')
 
 async def get_block(url, pos, eyelevel):
-    return await send_to_socket(url, 'block', {"pos": pos, "eyelevel": eyelevel})
+    return await send_to_socket(url, 'block',False, {"pos": pos, "eyelevel": eyelevel})
 
 async def depth(url, pos):
-    return await send_to_socket(url, 'depth', {'pos': pos})
+    return await send_to_socket(url, 'depth',False, {'pos': pos})
 
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
