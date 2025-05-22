@@ -154,37 +154,6 @@ class Robot {
     this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север'}[this.direction];
   }
 
-  changeMode() {
-    this.mode = this.mode === 'ручной' ? 'автоматический' : 'ручной';
-    if (this.mode === 'автоматический') {
-      this.autoModeInterval = setInterval(() => {
-        const nearLocations = this.getNearLocation(5);
-        const filteredLocations = nearLocations.filter(location => location.location === 'почва');
-        if (filteredLocations.length > 0) {
-          const [x, z, y] = filteredLocations[0].coordinates;
-          const [current_x, current_y, current_z] = this.coordinates;
-          if (current_x === x && current_y === y && current_z === z) {
-            return;
-          }
-          if (current_x > x) {
-            this.direction = 'запад';
-          } else if (current_x < x) {
-            this.direction = 'восток';
-          } else if (current_z > z) {
-            this.direction = 'юг';
-          } else if (current_z < z) {
-            this.direction = 'север';
-          }
-          this.moveForward();
-        } else {
-          this.moveForward();
-        }
-      }, 10000);
-    } else {
-      clearInterval(this.autoModeInterval);
-    }
-  }
-
   getNearLocation(radius) {
     const [x, z, y] = this.coordinates;
     const nearLocations = [];

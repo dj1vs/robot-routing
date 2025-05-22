@@ -43,11 +43,6 @@ io.on('connection', (socket) => {
         robot.restart();
     });
 
-    // переключение режимов
-    socket.on('changeMode', () => {
-        robot.changeMode();
-    });
-
     socket.on('heal', () => {
         robot.heal();
         const state = robot.getState();

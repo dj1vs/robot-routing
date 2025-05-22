@@ -72,11 +72,6 @@ function heal() {
   socket.emit("heal");
 }
 
-function changeMode() {
-  console.log("changing mode");
-  socket.emit("changeMode");
-}
-
 function restart() {
   console.log("restarting...");
   socket.emit("restart");

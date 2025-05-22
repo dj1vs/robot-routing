@@ -181,12 +181,6 @@ async def turn(sid, dir):
             await pybasic.execute_text(f"TURN \"{dir}\"")
 
 @sio.event
-async def changeMode(sid):
-    for station in stations.values():
-        if sid in station.clients:
-            await station.socket.emit("changeMode")
-
-@sio.event
 async def restart(sid):
     for station in stations.values():
         if sid in station.clients:
