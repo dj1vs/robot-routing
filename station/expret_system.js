@@ -7,9 +7,9 @@ class ExpertSystem
 
     process_new_coord(new_coord) {
         const alreadyVisited = this.visited_coordinates.findIndex(coord =>
-            coord.x === new_coord.x && coord.y === new_coord.y
+            coord[0] === new_coord[0] && coord[1] === new_coord[1] && coord[2] === new_coord[2]
         );
-
+        
         if (alreadyVisited === -1)
         {
             this.visited_coordinates.push(new_coord)

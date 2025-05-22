@@ -133,60 +133,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('depth', (data, callback) => {
-        const coords = robot.coordinates;
-        const map_copy = map;
-        const robot_dir = robot.direction;
-
-        const dir_offsets = {
-            'север': { front: [0, 1, 0], back: [0, -1, 0], right: [-1, 0, 0], left: [1, 0, 0] },
-            'юг': { front: [0, -1, 0], back: [0, 1, 0], right: [1, 0, 0], left: [-1, 0, 0] },
-            'восток': { front: [1, 0, 0], back: [-1, 0, 0], right: [0, 1, 0], left: [0, -1, 0] },
-            'запад': { front: [-1, 0, 0], back: [1, 0, 0], right: [0, -1, 0], left: [0, 1, 0] }
-        };
-
-        if (!(dir_offsets[robot_dir] && dir_offsets[robot_dir][data.pos])) {
-            return;
-        }
-
-        let [dx, dy, dz] = dir_offsets[robot_dir][data.pos];
-        let [tx, ty, tz] = [coords[0] + dx, coords[2] + dy, coords[1] - 1] 
-
-        // tx, ty, tz - блок на уровне земли в нужном нам направлении
-
-        if (map[tx][ty][tz] == 'воздух')
-        {
-            // имеем дело с пропастью
-            let final_z = tz - 1;
-            while (final_z >= 0 && map[tx][ty][final_z] == 'воздух') final_z--;
-
-            if (final_z < 0)
-            {
-                callback(10000);
-                return;
-            }
-            else
-            {
-                callback(tz - final_z - 1);
-                return;
-            }
-        }
-        else
-        {
-            // считаем, насколько высоко перед нами гора
-            let final_z = tz + 1
-            while (final_z - tz < 10000 && map[tx][ty][final_z] != 'воздух') final_z++;
-
-            if (final_z - tz >= 10000)
-            {
-                callback(-10000);
-                return;
-            }
-            else
-            {
-                callback(tz - final_z + 1);
-                return;
-            }
-        }
+        const depth = robot.getDepth(data.pos)
+        console.log(data.pos, depth)
+        callback(depth)
     });
 
     socket.on("start_basic_program", (data, callback) => {

@@ -175,6 +175,59 @@ class Robot {
     return nearLocations;
   }
 
+  getDepth(pos)
+  {
+    const coords = this.coordinates;
+    const robot_dir = this.direction;
+
+    const dir_offsets = {
+        'север': { front: [0, 1, 0], back: [0, -1, 0], right: [-1, 0, 0], left: [1, 0, 0] },
+        'юг': { front: [0, -1, 0], back: [0, 1, 0], right: [1, 0, 0], left: [-1, 0, 0] },
+        'восток': { front: [1, 0, 0], back: [-1, 0, 0], right: [0, 1, 0], left: [0, -1, 0] },
+        'запад': { front: [-1, 0, 0], back: [1, 0, 0], right: [0, -1, 0], left: [0, 1, 0] }
+    };
+
+    if (!(dir_offsets[robot_dir] && dir_offsets[robot_dir][pos])) {
+        return;
+    }
+
+    let [dx, dy, dz] = dir_offsets[robot_dir][pos];
+    let [tx, ty, tz] = [coords[0] + dx, coords[2] + dy, coords[1] - 1] 
+
+    // tx, ty, tz - блок на уровне земли в нужном нам направлении
+
+    if (map.at(tx).at(ty).at(tz) == 'воздух')
+    {
+        // имеем дело с пропастью
+        let final_z = tz - 1;
+        while (final_z >= 0 && map[tx][ty][final_z] == 'воздух') final_z--;
+
+        if (final_z < 0)
+        {
+            return 10000;
+        }
+        else
+        {
+            return tz - final_z - 1;
+        }
+    }
+    else
+    {
+        // считаем, насколько высоко перед нами гора
+        let final_z = tz + 1
+        while (final_z - tz < 10000 && map.at(tx).at(ty).at(final_z) != 'воздух') final_z++;
+
+        if (final_z - tz >= 10000)
+        {
+            return -10000;
+        }
+        else
+        {
+            return tz - final_z + 1;
+        }
+    }
+  }
+
   getCurrentLocation() {
     return map[this.coordinates[0]][this.coordinates[2]][this.coordinates[1] - 1]
   }
