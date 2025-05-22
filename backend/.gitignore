@@ -1,5 +1,7 @@
 venv
 .vscode
+./src/basic/pybasic/parser.out
+./src/basic/pybasic/parsetab.py
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
