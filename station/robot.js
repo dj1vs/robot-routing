@@ -200,7 +200,7 @@ class Robot {
     {
         // имеем дело с пропастью
         let final_z = tz - 1;
-        while (final_z >= 0 && map[tx][ty][final_z] == 'воздух') final_z--;
+        while (final_z >= 0 && map.at(tx).at(ty).at(final_z) == 'воздух') final_z--;
 
         if (final_z < 0)
         {
@@ -208,7 +208,7 @@ class Robot {
         }
         else
         {
-            return tz - final_z - 1;
+            return tz - final_z;
         }
     }
     else
