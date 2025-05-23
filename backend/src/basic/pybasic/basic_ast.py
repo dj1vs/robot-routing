@@ -154,13 +154,11 @@ class ASTNode:
 
         elif self.value == '<FOR>':
             loop_var_name = self.tree[0].value
-            start = self.tree[1].run()
-            get_end = lambda: self.tree[2].run()
-            get_step = lambda: self.tree[3].run()
+            start = await self.tree[1].run()
             table_stack.top().set(loop_var_name, start)
             while True:
                 loop_var = table_stack.top().get(loop_var_name)
-                result = self.tree[4].run()
+                result = await self.tree[4].run()
                 if isinstance(result, ASTControl):
                     if result.msg == 'break':
                         break
@@ -168,13 +166,14 @@ class ASTNode:
                         continue
                     elif result.msg == 'return':
                         return result
-                table_stack.top().set(loop_var_name, loop_var + get_step())
-                if loop_var == get_end():
+                get_step_val = await self.tree[3].run()
+                table_stack.top().set(loop_var_name, loop_var + (get_step_val))
+                if loop_var == await self.tree[2].run():
                     break
 
         elif self.value == '<DO>':
             while True:
-                result = self.tree[1].run()
+                result = await self.tree[1].run()
                 if isinstance(result, ASTControl):
                     if result.msg == 'break':
                         break
@@ -182,7 +181,7 @@ class ASTNode:
                         continue
                     elif result.msg == 'return':
                         return result
-                if self.tree[0].run() is False:
+                if await self.tree[0].run() is False:
                     break
 
         elif self.value == '<WHILE>':
@@ -239,7 +238,7 @@ class ASTNode:
             return table_stack.top().get(self.value)
 
         elif self.type == 'array':
-            return [n.run() for n in self.value]
+            return [await n.run() for n in self.value]
 
         elif self.type in ASTNode.literals:
             return self.value
