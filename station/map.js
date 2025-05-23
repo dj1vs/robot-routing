@@ -29,10 +29,8 @@ for (let x = 0; x < width; x++) {
         cellType = "почва";
       } else if (noiseValue < thresholds.acid) {
         cellType = "кислотная поверхность";
-      } else if (noiseValue < thresholds.sand) {
-        cellType = "песок";
       } else {
-        cellType = "вода";
+        cellType = "песок";
       }
 
       map[x][y].push(cellType)

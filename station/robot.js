@@ -26,9 +26,6 @@ class Robot {
       case "почва":
         baseTemperature = 15;
         break;
-      case "вода":
-        baseTemperature = 10;
-        break;
       case "кислотная поверхность":
         baseTemperature = 100;
         break;
@@ -72,9 +69,11 @@ class Robot {
 
     if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
       future_coordinates[1] = current_z + 1;
-      if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух'
-        && map[future_coordinates[0]][future_coordinates[2] + 1][future_coordinates[1]] !== 'воздух'
-      ) {
+      if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] === undefined)
+      {
+        map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] = 'воздух';
+      }
+      if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
         return;
       }
     } 
@@ -112,9 +111,6 @@ class Robot {
         break;
       case 'кислотная поверхность':
         await new Promise(r => setTimeout(r, 3000));
-        break;
-      case 'вода':
-        await new Promise(r => setTimeout(r, 4000));
         break;
       default:
         break;
@@ -262,9 +258,6 @@ class Robot {
     const location = this.getCurrentLocation();
     if (location === 'кислотная поверхность') {
       this.health -= 100;
-    }
-    if (location === 'вода') {
-      this.health -= 10;
     }
 
     return {
