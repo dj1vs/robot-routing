@@ -47,9 +47,9 @@ async def move_basic(url, dir):
     elif (dir == 'left'):
         cmd = 'moveLeft'
     else:
-        return
+        return False
     
-    await send_to_socket(url, cmd, True, dir)    
+    return await send_to_socket(url, cmd, True, dir)    
 
 async def turn_basic(url, dir):
     cmd = ''

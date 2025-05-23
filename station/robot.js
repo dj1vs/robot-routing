@@ -17,7 +17,7 @@ class Robot {
 
   getStationTemperature() {
     let baseTemperature = 0;
-    const surfaceType = map[this.coordinates[0]][this.coordinates[1]][this.coordinates[2]]
+    const surfaceType = map.at(this.coordinates[0]).at(this.coordinates[1]).at(this.coordinates[2])
 
     switch (surfaceType) {
       case "воздух":
@@ -60,11 +60,11 @@ class Robot {
     }
 
     if (future_coordinates[0] < 0 || future_coordinates[0] >= map.length) {
-      return;
+      return false;
     }
 
     if (future_coordinates[2] < 0 || future_coordinates[2] >= map[0][0].length) {
-      return;
+      return false;
     }
 
     if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
@@ -74,7 +74,7 @@ class Robot {
         map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] = 'воздух';
       }
       if (map[future_coordinates[0]][future_coordinates[2]][future_coordinates[1]] !== 'воздух') {
-        return;
+        return false;
       }
     } 
 
@@ -85,7 +85,7 @@ class Robot {
     future_coordinates[1]++;
 
     if (future_coordinates[1] === 0) {
-      return;
+      return false;
     }
 
     if (current_z - future_coordinates[1] > 3) {
@@ -116,30 +116,33 @@ class Robot {
         break;
     }
     this.coordinates = future_coordinates;
+    return true;
   }
 
   async moveForward() {
-    await this.move(this.direction, 1);
+    return await this.move(this.direction, 1);
   }
 
 // 26/47
 
   async moveBackward() {
-    await this.move(this.direction, -1);
+    return await this.move(this.direction, -1);
   }
 
   async moveLeft() {
     let dir_save = this.direction
     this.direction = { 'север': 'восток', 'восток': 'юг', 'юг': 'запад', 'запад': 'север' }[this.direction];
-    await this.move(this.direction, 1);
+    const move_result = await this.move(this.direction, 1);
     this.direction = dir_save
+    return move_result;
   }
   
   async moveRight() {
     let dir_save = this.direction
     this.direction = { 'север': 'запад', 'запад': 'юг', 'юг': 'восток', 'восток': 'север' }[this.direction];
-    await this.move(this.direction, 1);
+    const move_result = await this.move(this.direction, 1);
     this.direction = dir_save
+    return move_result;
   }
   
   async turnLeft() {
