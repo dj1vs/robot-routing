@@ -77,6 +77,9 @@ async def get_block(url, pos, eyelevel):
 async def depth(url, pos):
     return await send_to_socket(url, 'depth',False, {'pos': pos})
 
+async def health(url):
+    return await send_to_socket(url, 'health', False, {'plug': 'plug'})
+
 def reflect_basic_funcs(url):
     global_table.reflect('MOVE', partial(move_basic, url))
     global_table.reflect('TURN', partial(turn_basic, url))
@@ -85,3 +88,4 @@ def reflect_basic_funcs(url):
     global_table.reflect('GET_ROBOT_COORDINATES', partial(get_robot_coordinates, url))
     global_table.reflect('GET_BLOCK', partial(get_block, url))
     global_table.reflect('DEPTH', partial(depth, url))
+    global_table.reflect('HEALTH', partial(health, url))

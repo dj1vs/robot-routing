@@ -151,6 +151,9 @@ io.on('connection', (socket) => {
     socket.on("health_refill", () => {
         robot.health = 10000;
     })
+    socket.on("health", (data, callback) => {
+        callback(robot.health)
+    })
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
