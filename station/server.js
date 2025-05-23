@@ -127,8 +127,8 @@ io.on('connection', (socket) => {
 
         if (dir_offsets[robot_dir] && dir_offsets[robot_dir][data.pos]) {
             let [dx, dy, dz] = dir_offsets[robot_dir][data.pos];
-            if (data.eyelevel) dz = 1;
-            callback(map_copy[coords[0] + dx][coords[2] + dy][coords[1] + dz]);
+            dz = data.level
+            callback(map_copy.at(coords[0] + dx).at(coords[2] + dy).at(coords[1] + dz));
         }
     });
 

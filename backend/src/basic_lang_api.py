@@ -71,8 +71,8 @@ async def get_robot_location(url):
 async def get_robot_coordinates(url):
     return await send_to_socket(url, 'coordinates',False, 'test')
 
-async def get_block(url, pos, eyelevel):
-    return await send_to_socket(url, 'block',False, {"pos": pos, "eyelevel": eyelevel})
+async def get_block(url, pos, level):
+    return await send_to_socket(url, 'block',False, {"pos": pos, "level": level})
 
 async def depth(url, pos):
     return await send_to_socket(url, 'depth',False, {'pos': pos})
