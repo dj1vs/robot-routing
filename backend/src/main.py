@@ -10,9 +10,9 @@ uvicorn_access = logging.getLogger("uvicorn.access")
 uvicorn_access.disabled = True
 
 
-from basic_lang_api import Station, stations, reflect_basic_funcs, going_circles
+from basic_lang_api import Station, stations, reflect_basic_funcs, going_circles, robot_died
 
-from basic.pybasic.utils import BasicError, GoingCirclesError
+from basic.pybasic.utils import BasicError, ExpertSystemError
 
 sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi', log_output=False, debug=False)
 
@@ -90,6 +90,10 @@ async def connectToStation(sid, url):
             # Update health status
             if station.currentState.get("health") != state["health"]:
                 station.currentState["health"] = state["health"]
+                if station.currentState["health"] < 10:
+                    global robot_died
+                    robot_died.set()
+                    station_socket.emit("health_refill")
                 for client in station.clients:
                     await sio.emit("health", state["health"], to=client)
 
@@ -155,7 +159,7 @@ async def exec(sid, text):
             await station.socket.emit("end_basic_program", {'plug': 'plug'}, callback = callback)
             await future
 
-            if isinstance(text_result, GoingCirclesError):
+            if isinstance(text_result, ExpertSystemError):
                 await sio.emit("runtime_error", str(text_result), to=sid)
             elif isinstance(text_result, BasicError):
                 await sio.emit("basic_error", str(text_result), to=sid)            

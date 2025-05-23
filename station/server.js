@@ -148,6 +148,9 @@ io.on('connection', (socket) => {
         robot.deactivate_expert_system();
         callback('success')
     })
+    socket.on("health_refill", () => {
+        robot.health = 10000;
+    })
 
     socket.on('disconnect', () => {
         console.log('user disconnected');

@@ -12,6 +12,7 @@ class Station:
 
 stations = {}
 going_circles = asyncio.Event()
+robot_died = asyncio.Event()
 
 async def send_to_socket(url, cmd, wait, *args):
     global stations

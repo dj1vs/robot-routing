@@ -29,7 +29,7 @@ class RootStack(Stack):
 class BasicError(Exception):
     pass
 
-class GoingCirclesError(Exception):
+class ExpertSystemError(Exception):
     pass
 
 def item_getter(x):
